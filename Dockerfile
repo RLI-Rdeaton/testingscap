@@ -8,9 +8,9 @@ ARG BASE_TAG=latest
 
 ARG FID_REGISTRY=docker.io
 ARG FID_IMAGE=radiantone/fid
-ARG FID_TAG=7.4.11
+ARG FID_TAG=7.4.10
 
-FROM ${FID_REGISTRY}/${FID_IMAGE}:${FID_TAG} as base
+FROM ${FID_REGISTRY}/${FID_IMAGE}:${FID_TAG} AS base
 
 RUN chmod -R g=u /opt/radiantone
 
