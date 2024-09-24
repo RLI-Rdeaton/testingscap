@@ -31,5 +31,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/testing:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
           labels: ${{ steps.meta.outputs.labels }}
