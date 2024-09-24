@@ -4,9 +4,9 @@ on:
   release:
     types: [published]
 
-env:  
+env:
   REGISTRY: docker.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
 
 jobs:
   build:
@@ -30,3 +30,31 @@ jobs:
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}, ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
           labels: ${{ steps.meta.outputs.labels }}
+
+checkov:
+  permissions:
+    contents: read # for actions/checkout to fetch code
+    security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+    actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+    - name: Checkov GitHub Action
+      uses: bridgecrewio/checkov-action@d0e41abbcc8c1103c6ae7e451681d071f05e1c20 # v12
+      with:
+        docker_image: ${{ env.IMAGE_NAME }} # define the name of the image to scan
+        dockerfile_path: ${{ format('{0}/Dockerfile', env.IMAGE_PATH) }} # path to the Dockerfile
+        # This will add both a CLI output to the console and create a results.sarif file
+        quiet: true # optional: display only failed checks
+        output_format: cli,sarif
+        output_file_path: console,results.sarif
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@461ef6c76dfe95d5c364de2f431ddbd31a417628 # v3
+      # Results are generated only on a success or failure
+      # this is required since GitHub by default won't run the next step
+      # when the previous one has failed. Security checks that do not pass will 'fail'.
+      # An alternative is to add `continue-on-error: true` to the previous step
+      # Or 'soft_fail: true' to checkov.
+      if: success() || failure()
+      with:
+        sarif_file: results.sarif
