@@ -1,5 +1,5 @@
 ################################################################################
-# Build stage 00
+# Build stage 0
 # Extract FID base files
 ################################################################################
 ARG BASE_REGISTRY=docker.io
@@ -25,7 +25,7 @@ ARG FID_TAG
 # nc is apk add netcat-openbsd
 # gzip is on the machine
 # unzip is on the machine
-# vi comes standard - do we want to add vim or nano?
+# vi comes standard - do w e want to add vim or nano?
 #
 
 RUN apk update && apk add --no-cache --update-cache netcat-openbsd \
