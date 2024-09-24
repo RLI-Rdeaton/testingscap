@@ -1,12 +1,9 @@
 name: ci
 
 on:
-  push:
-    branches:
-      - "main"
-    paths:
-      - "Dockerfile"
-
+  release:
+    types: [published]
+    
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
