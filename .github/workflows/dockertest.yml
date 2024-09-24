@@ -3,7 +3,7 @@ name: ci
 on:
   release:
     types: [published]
-    
+
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
@@ -28,5 +28,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}
           labels: ${{ steps.meta.outputs.labels }}
