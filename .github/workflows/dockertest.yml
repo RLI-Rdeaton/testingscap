@@ -47,6 +47,7 @@ jobs:
     steps:
       - name: Test things
         run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - name: PWD time
         run: pwd
       - name: Install prerequisites
         run: |
