@@ -88,7 +88,7 @@ jobs:
           docker rm "$container_id"
           unset container_id
           set +e
-          oscap-docker image "${IMAGE_NAME}" xccdf eval --verbose ERROR --fetch-remote-resources --profile "xccdf_basic_profile_.check" --results "openscap-report.xml" --report "openscap-report.html" "${SSG_DIR}/${SSG_DIR}/stigs-${WOLFI_STIG_VERSION}/gpos/xml/scap/ssg/content/ssg-chainguard-gpos-ds.xml"
+          oscap-docker image "${IMAGE_NAME}" xccdf eval --verbose ERROR --fetch-remote-resources --profile "xccdf_basic_profile_.check" --results "openscap-report.xml" --report "openscap-report.html" "${SSG_DIR}/stigs-${WOLFI_STIG_VERSION}/gpos/xml/scap/ssg/content/ssg-chainguard-gpos-ds.xml"
           OSCAP_EXIT_CODE=$?
           set -e
 
