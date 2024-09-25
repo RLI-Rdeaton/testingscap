@@ -38,31 +38,38 @@ jobs:
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     container:
-      image: cgr.dev/chainguard/openscap:latest-dev
+      image: alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
       env:
         SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
         MICROSOFT_SARIF_MULTITOOL_VERSION: "4.5.4"
         MITRE_SAF_VERSION: "1.4.14"
+        WOLFI_STIG_VERSION: "0.1.2"
         SSG_DIR: "ssg"
     steps:
-      - name: Test things
-        run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - name: PWD time
-        run: pwd
-      - name: Who am I?
-        run: whoami
-      - name: Add nonroot to docker group
-        run: sudo usermod -a -G docker nonroot
+      - name: Install prerequisites
+        run: |
+          # shellcheck shell=sh
+          set -eu
+          apk add curl docker jq openscap-docker npm gcompat unzip
+          npm install -g "@microsoft/sarif-multitool@${MICROSOFT_SARIF_MULTITOOL_VERSION}"
+          # Specify the sinon version to use.
+          # Remove sinon from this line when sinon 16.1.2 (or later) is released, or when using MITRE_SAF_VERSION that includes https://github.com/mitre/saf/pull/1919
+          npm install -g sinon@16.1.0 "@mitre/saf@${MITRE_SAF_VERSION}"
+          mkdir -p "${SSG_DIR}"
+          curl "https://github.com/ComplianceAsCode/content/releases/download/v${SCAP_SECURITY_GUIDE_VERSION}/scap-security-guide-${SCAP_SECURITY_GUIDE_VERSION}.zip" -Lso "${SSG_DIR}/ssg.zip"
+          curl "https://github.com/chainguard-dev/stigs/archive/refs/tags/v${WOLFI_STIG_VERSION}.zip" -Lso "${SSG_DIR}/wolfi.zip"
+          unzip "${SSG_DIR}/ssg.zip" -d "${SSG_DIR}"
+          unzip "${SSG_DIR}/wolfi.zip" -d "${SSG_DIR}"
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Pull the docker image to scan
         run: |
           # shellcheck shell=sh
           set -eu
           # oscap-docker requires the image to have been pulled
           docker pull "${IMAGE_NAME}"
-      - name: Run openscap
-        run: |
-          oscap-docker image "${IMAGE_NAME}" target xccdf eval \
-          --profile "xccdf_basic_profile_.check" \
-          --report /out/report.html \
-          --results /out/openscap-report.xml \
-          /usr/share/xml/scap/ssg/content/ssg-chainguard-gpos-ds.xml
+      - name: Reveal your secrets
+        run: ls -latr ${SSG_DIR}
