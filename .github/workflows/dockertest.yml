@@ -48,7 +48,7 @@ jobs:
       - name: Install prerequisites
         run: |
           # shellcheck shell=sh
-          set -eu
+          set -eux
           apk add curl docker jq openscap-docker npm gcompat unzip
           npm install -g "@microsoft/sarif-multitool@${MICROSOFT_SARIF_MULTITOOL_VERSION}"
           # Specify the sinon version to use.
