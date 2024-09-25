@@ -42,8 +42,11 @@ jobs:
       - name: Checkov GitHub Action
         uses: bridgecrewio/checkov-action@d0e41abbcc8c1103c6ae7e451681d071f05e1c20 # v12
         with:
-          docker_image: ${{ env.IMAGE_NAME }} # define the name of the image to scan
-          dockerfile_path: ${{ format('{0}/Dockerfile', env.IMAGE_PATH) }} # path to the Dockerfile
+          directory: .
+          # This will add both a CLI output to the console and create a results.sarif file
+          quiet: true # optional: display only failed checks
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
           # This will add both a CLI output to the console and create a results.sarif file
           quiet: true # optional: display only failed checks
           output_format: cli,sarif
