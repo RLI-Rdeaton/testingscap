@@ -51,6 +51,8 @@ jobs:
         run: pwd
       - name: Who am I?
         run: whoami
+      - name: Add nonroot to docker group
+        run: sudo usermod -a -G docker nonroot
       - name: Pull the docker image to scan
         run: |
           # shellcheck shell=sh
