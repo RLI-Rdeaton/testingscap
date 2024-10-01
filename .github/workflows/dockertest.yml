@@ -130,9 +130,9 @@ jobs:
         uses: anchore/scan-action@v3
         id: grypescan
         with:
-          image: ${{ env.IMAGE_NAME }}
+          image: ${IMAGE_NAME}
           output-format: sarif
-          fail-build: false
+          severity-cutoff: critical
       -
         name: upload Anchore scan SARIF report
         uses: github/codeql-action/upload-sarif@v2
