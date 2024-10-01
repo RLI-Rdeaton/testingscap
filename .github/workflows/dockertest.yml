@@ -127,7 +127,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Scan image
-        uses: anchore/scan-action
+        uses: anchore/scan-action@v4
         id: grypescan
         with:
           image: "modusmundi/testingscap:latest"
