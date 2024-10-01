@@ -28,6 +28,18 @@ jobs:
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}, ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
           labels: ${{ steps.meta.outputs.labels }}
+      -
+        name: Scan image
+        uses: anchore/scan-action@v4.1.2
+        id: grypescan
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          fail-build: false
+      -
+        name: upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.grypescan.outputs.sarif }}
 
   scap:
     needs: build
