@@ -127,11 +127,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Scan image
-        uses: anchore/scan-action@v4
+        uses: anchore/scan-action
         id: grypescan
         with:
-          image: ${{env.IMAGE_NAME}}
-          output-format: sarif
+          image: "modusmundi/testingscap:latest"
           fail-build: false
       -
         name: upload Anchore scan SARIF report
