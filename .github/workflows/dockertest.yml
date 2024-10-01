@@ -124,7 +124,7 @@ jobs:
         uses: anchore/scan-action@v3
         id: grypescan
         with:
-          image: ${{ IMAGE_NAME }}
+          image: ${{ env.IMAGE_NAME }}
           output-format: sarif
           fail-build: false
       -
