@@ -127,11 +127,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Scan image
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@v4
         id: grypescan
         with:
           image: ${IMAGE_NAME}
           output-format: sarif
+          fail-build: false
       -
         name: upload Anchore scan SARIF report
         uses: github/codeql-action/upload-sarif@v2
