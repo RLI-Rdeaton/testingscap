@@ -139,6 +139,9 @@ jobs:
   trivy:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      TRIVY_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+      TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       -
         name: Scan image
