@@ -122,7 +122,7 @@ jobs:
   #  runs-on: ubuntu-latest
   #  steps:
   #    -
-  #      name: Scan image
+  #      name: Scan image with Grype
   #      uses: anchore/scan-action@v4.1.2
   #      id: grypescan
   #      with:
@@ -150,12 +150,24 @@ jobs:
         name: Scan image
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: 'redhat/ubi9:9.4'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: 'table'
+          output: 'trivy-results.table'
       -
-        name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        name: Upload reports
+        if: success() || failure() # always run even if the previous step fails
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
         with:
-          sarif_file: 'trivy-results.sarif'
+          name: trivy-results
+          path: |
+            trivy-results.table
+
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Scan image with Snyk
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: ${{ env.IMAGE_NAME }}
