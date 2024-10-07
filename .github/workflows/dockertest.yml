@@ -162,9 +162,30 @@ jobs:
           path: |
             trivy-results.table
 
-  snyk:
+  #snyk:
+  #  needs: build
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    -
+  #      name: Scan image with Snyk
+  #      uses: snyk/actions/docker@master
+  #      env:
+  #        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  #      with:
+  #        image: ${{ env.IMAGE_NAME }}
+  clam:
+    needs: build
+    permissions:
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
+    env:
+      EXPORT_NAME: build.tar.gz
+      DIR_NAME: build
     steps:
+      -
+        name: Start ClamAV daemon
+        uses: toblux/start-clamd-github-action@v0.1
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -172,9 +193,25 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Scan image with Snyk
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        name: Create the docker image to scan
+        run: |
+          set -eu
+          docker create "${IMAGE_NAME}"
+      -
+        name: Create and export, then extract
+        run: |
+          set -eu
+          CONT_ID=$(docker create "${IMAGE_NAME}")
+          docker export ${CONT_ID} -o "${EXPORT_NAME}" | tar -xc "${DIR_NAME}"
+      -
+        name: Scan using ClamAV to ensure no malware in static images
+        run: |
+          clamdscan -v "${DIR_NAME}" > foo.txt
+      -
+        name: Upload reports
+        if: success() || failure() # always run even if the previous step fails
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
         with:
-          image: ${{ env.IMAGE_NAME }}
+          name: clamd-results
+          path: |
+            foo.txt
