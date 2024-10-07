@@ -200,7 +200,7 @@ jobs:
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          CONT_ID=$(docker create "${IMAGE_NAME}")
+          CONT_ID=$(docker run "${IMAGE_NAME}")
           docker cp ${CONT_ID}:. ${{ env.DIR_NAME }}
       -
         name: REVEAL YOUR SECRETS
