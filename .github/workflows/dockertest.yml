@@ -203,7 +203,16 @@ jobs:
           set -eu
           CONT_ID=$(docker create "${IMAGE_NAME}")
           docker export ${CONT_ID} -o "${EXPORT_NAME}"
-          tar -xf "${EXPORT_NAME}" "${DIR_NAME}"
+      -
+        name: REVEAL YOUR SECRETS
+        run: ls -latr
+      -
+        name: extract?
+        run: |
+          tar -xf "${EXPORT_NAME}"
+      -
+        name: REVEAL YOUR SECRETS
+        run: ls -latr 
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
