@@ -195,12 +195,13 @@ jobs:
         run: |
           set -eu
           docker create "${IMAGE_NAME}"
+      # CONT_ID=$(docker create "${IMAGE_NAME}")
       -
         name: Create and export, then extract
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          CONT_ID=$(docker create "${IMAGE_NAME}")
+          CONT_ID=$(docker create quay.io/petr_ruzicka/malware-cryptominer-container)
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
       -
         name: REVEAL YOUR SECRETS
