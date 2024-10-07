@@ -204,11 +204,10 @@ jobs:
           CONT_ID=$(docker create "${IMAGE_NAME}")
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
       -
-        name: Make the build dir
-        run: mkdir -p ${{ env.DIR_NAME }}
-      -
         name: REVEAL YOUR SECRETS
-        run: ls -latr
+        run: |
+          ls -latr
+          pwd
       -
         name: extract?
         run: |
