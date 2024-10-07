@@ -180,8 +180,8 @@ jobs:
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     env:
-      EXPORT_NAME: build.tar.gz
-      DIR_NAME: build
+      EXPORT_NAME: "build.tar"
+      DIR_NAME: "/build"
     steps:
       -
         name: Start ClamAV daemon
@@ -202,21 +202,21 @@ jobs:
         run: |
           set -eu
           CONT_ID=$(docker create "${IMAGE_NAME}")
-          docker export ${CONT_ID} -o "${{ env.EXPORT_NAME }}"
+          docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
       -
         name: REVEAL YOUR SECRETS
         run: ls -latr
       -
         name: extract?
         run: |
-          tar -xf "${{ env.EXPORT_NAME }}"
+          tar -xf ${{ env.EXPORT_NAME }} -C ${{ env.DIR_NAME }}
       -
         name: REVEAL YOUR SECRETS
         run: ls -latr
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamdscan -v "${{ env.DIR_NAME }}" > foo.txt
+          clamdscan -v ${{ env.DIR_NAME }} > foo.txt
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
