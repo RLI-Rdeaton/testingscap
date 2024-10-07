@@ -200,24 +200,17 @@ jobs:
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          CONT_ID=$(docker run "${IMAGE_NAME}")
-          docker cp ${CONT_ID}:. ${{ env.DIR_NAME }}
+          CONT_ID=$(docker create "${IMAGE_NAME}")
+          docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
       -
         name: REVEAL YOUR SECRETS
         run: |
           ls -latr
           pwd
-      #-
-      #  name: extract?
-      #  run: |
-      #    tar -xf ${{ env.EXPORT_NAME }} -C ${{ env.DIR_NAME }}
-      -
-        name: REVEAL YOUR SECRETS
-        run: ls -latr
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamdscan -v ${{ env.DIR_NAME }} > foo.txt
+          clamscan -v ${{ env.EXPORT_NAME }} > foo.txt
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
