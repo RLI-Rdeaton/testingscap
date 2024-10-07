@@ -70,8 +70,6 @@ jobs:
           set -eu
           # oscap-docker requires the image to have been pulled
           docker pull "${IMAGE_NAME}"
-      - name: Reveal your secrets
-        run: ls -latr ${SSG_DIR}/stigs-${WOLFI_STIG_VERSION}/gpos/xml/scap/ssg/content/
       - name: Run openscap
         run: |
           # shellcheck shell=sh
@@ -181,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       EXPORT_NAME: "build.tar"
-      DIR_NAME: "/build"
+      DIR_NAME: "build"
     steps:
       -
         name: Start ClamAV daemon
@@ -208,6 +206,7 @@ jobs:
         run: |
           ls -latr
           pwd
+          mkdir -p ${{ env.DIR_NAME }}
       -
         name: extract?
         run: |
