@@ -203,7 +203,7 @@ jobs:
           set -eu
           CONT_ID=$(docker create "${IMAGE_NAME}")
           docker export ${CONT_ID} -o "${EXPORT_NAME}"
-          tar -xzf "${EXPORT_NAME}" "${DIR_NAME}"
+          tar -xf "${EXPORT_NAME}" "${DIR_NAME}"
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
