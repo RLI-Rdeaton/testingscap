@@ -188,7 +188,7 @@ jobs:
           db_main: true
           db_daily: true
           log_verbose: true
-          log_file: foo.txt
+          #log_file: foo.txt
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -211,6 +211,7 @@ jobs:
       -
         name: REVEAL YOUR SECRETS
         run: |
+          ls -latr  ${{ github.workspace }}
           ls -latr
           pwd
       -
