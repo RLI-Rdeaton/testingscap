@@ -212,7 +212,7 @@ jobs:
           tar -xf "${EXPORT_NAME}"
       -
         name: REVEAL YOUR SECRETS
-        run: ls -latr 
+        run: ls -latr
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
