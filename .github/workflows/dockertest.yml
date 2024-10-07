@@ -199,18 +199,18 @@ jobs:
         name: Create and export, then extract
         run: |
           set -eu
+          mkdir -p ${{ env.DIR_NAME }}
           CONT_ID=$(docker create "${IMAGE_NAME}")
-          docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
+          docker cp ${CONT_ID}:. ${{ env.DIR_NAME }}
       -
         name: REVEAL YOUR SECRETS
         run: |
           ls -latr
           pwd
-          mkdir -p ${{ env.DIR_NAME }}
-      -
-        name: extract?
-        run: |
-          tar -xf ${{ env.EXPORT_NAME }} -C ${{ env.DIR_NAME }}
+      #-
+      #  name: extract?
+      #  run: |
+      #    tar -xf ${{ env.EXPORT_NAME }} -C ${{ env.DIR_NAME }}
       -
         name: REVEAL YOUR SECRETS
         run: ls -latr
