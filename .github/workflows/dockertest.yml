@@ -217,7 +217,7 @@ jobs:
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamscan -v ${{ env.EXPORT_NAME }} > foo.txt
+          clamscan --scan-archive=yes -v ${{ env.EXPORT_NAME }} > foo.txt
           clamconf -n >> foo.txt
       -
         name: Upload reports
