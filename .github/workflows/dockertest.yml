@@ -206,13 +206,8 @@ jobs:
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          CONT_ID=$(docker create quay.io/petr_ruzicka/malware-cryptominer-container)
+          CONT_ID=$(docker create modusmundi/eicartest:1.0.0)
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
-      -
-        name: EICAR TESTING
-        run: |
-          curl -O https://secure.eicar.org/eicar.com
-          tar -cvf eicar.tar ./eicar.com
       -
         name: REVEAL YOUR SECRETS
         run: |
@@ -223,8 +218,6 @@ jobs:
         name: Scan using ClamAV to ensure no malware in static images
         run: |
           clamscan -v ${{ env.EXPORT_NAME }} > foo.txt
-          clamscan -v eicar.com >> foo.txt
-          clamscan -v eicar.tar >> foo.txt
           clamconf -n >> foo.txt
       -
         name: Upload reports
