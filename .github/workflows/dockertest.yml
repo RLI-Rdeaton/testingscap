@@ -224,6 +224,7 @@ jobs:
         run: |
           clamscan -v ${{ env.EXPORT_NAME }} > foo.txt
           clamscan -v eicar.tar >> foo.txt
+          clamconf -n >> foo.txt
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
