@@ -209,15 +209,20 @@ jobs:
           CONT_ID=$(docker create quay.io/petr_ruzicka/malware-cryptominer-container)
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
       -
+        name: EICAR TESTING
+        run: |
+          echo "X5O!P%@AP[4PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" > eicar.txt
+          tar -cvf eicar.tar ./eicar.txt
+      -
         name: REVEAL YOUR SECRETS
         run: |
-          ls -latr  ${{ github.workspace }}
+          ls -latr ${{ github.workspace }}
           ls -latr
           pwd
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamscan -v ${{ env.EXPORT_NAME }}
+          clamscan -v ${{ env.EXPORT_NAME }} > foo.txt
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
