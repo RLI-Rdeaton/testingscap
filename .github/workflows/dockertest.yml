@@ -217,7 +217,7 @@ jobs:
       -
         name: Why is this
         run: |
-          tar -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }} tar -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }} --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero'
+          tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
