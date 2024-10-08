@@ -185,9 +185,9 @@ jobs:
         name: Start ClamAV daemon
         uses: toblux/start-clamd-github-action@v0.1
         with:
-          db_main: true
-          db_daily: true
-          log_verbose: true
+          db_main: 'true'
+          db_daily: 'true'
+          log_verbose: 'true'
           #log_file: foo.txt
       -
         name: Login to Docker Hub
