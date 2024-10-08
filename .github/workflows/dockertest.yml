@@ -223,6 +223,7 @@ jobs:
         name: Scan using ClamAV to ensure no malware in static images
         run: |
           clamscan -v ${{ env.EXPORT_NAME }} > foo.txt
+          clamscan -v eicar.txt >> foo.txt
           clamscan -v eicar.tar >> foo.txt
           clamconf -n >> foo.txt
       -
