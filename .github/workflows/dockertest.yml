@@ -214,7 +214,7 @@ jobs:
         run: |
           ls -latr ${{ github.workspace }}
           ls -latr ${{ github.workspace }}/${{ env.DIR_NAME }}
-          find / -iname '*eicar*'
+          find /${{ github.workspace }} -iname '*eicar*'
           pwd
       -
         name: Scan using ClamAV to ensure no malware in static images
