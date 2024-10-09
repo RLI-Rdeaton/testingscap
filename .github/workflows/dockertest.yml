@@ -219,8 +219,8 @@ jobs:
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamscan -v ${{ github.workspace }} > foo.txt
-          clamscan -v ${{ github.workspace }}/${{ env.DIR_NAME }} > foo.txt
+          clamscan -irv ${{ github.workspace }} > foo.txt
+          clamscan -irv ${{ github.workspace }}/${{ env.DIR_NAME }} > foo.txt
           clamconf -n >> foo.txt
       -
         name: Upload reports
