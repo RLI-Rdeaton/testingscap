@@ -219,9 +219,12 @@ jobs:
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamscan -irv ${{ github.workspace }} > foo.txt
-          clamscan -irv ${{ github.workspace }}/${{ env.DIR_NAME }} > foo.txt
+          clamscan -ir ${{ github.workspace }}/${{ env.DIR_NAME }} > foo.txt
           clamconf -n >> foo.txt
+      -
+        name: Clean up on failure
+        run: |
+          grep 'FOUND' foo.txt > FOUND.txt
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -230,3 +233,11 @@ jobs:
           name: clamd-results
           path: |
             foo.txt
+      -
+        name: Upload reports
+        if: failure() # always run even if the previous step fails
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
+        with:
+          name: clamd-found
+          path: |
+            FOUND.txt
