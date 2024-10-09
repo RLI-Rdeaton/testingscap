@@ -208,20 +208,18 @@ jobs:
           mkdir -p ${{ env.DIR_NAME }}
           CONT_ID=$(docker create modusmundi/eicartest:1.0.0)
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
+          tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}
       -
         name: REVEAL YOUR SECRETS
         run: |
           ls -latr ${{ github.workspace }}
-          ls -latr
+          ls -latr ${{ github.workspace }}/${{ env.DIR_NAME }}
           pwd
-      -
-        name: Why is this
-        run: |
-          tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamscan -v ${{ github.workspace }} > foo.txt
+          clamscan -v ${{ github.workspace }}/ > foo.txt
+
           clamconf -n >> foo.txt
       -
         name: Upload reports
