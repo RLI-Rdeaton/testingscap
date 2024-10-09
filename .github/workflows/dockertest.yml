@@ -171,6 +171,7 @@ jobs:
   #        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
   #      with:
   #        image: ${{ env.IMAGE_NAME }}
+  
   clam:
     needs: build
     permissions:
@@ -187,8 +188,6 @@ jobs:
         with:
           db_main: 'true'
           db_daily: 'true'
-          log_verbose: 'true'
-          #log_file: foo.txt
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -196,13 +195,7 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Create the docker image to scan
-        run: |
-          set -eu
-          docker create "${IMAGE_NAME}"
-      # CONT_ID=$(docker create "${IMAGE_NAME}")
-      -
-        name: Create and export, then extract
+        name: Create, export, then extract to the filesystem
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
@@ -210,21 +203,9 @@ jobs:
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
           tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}/${{ env.DIR_NAME }}
       -
-        name: REVEAL YOUR SECRETS
-        run: |
-          ls -latr ${{ github.workspace }}
-          ls -latr ${{ github.workspace }}/${{ env.DIR_NAME }}
-          find /${{ github.workspace }} -iname '*eicar*'
-          pwd
-      -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamscan -ir ${{ github.workspace }}/${{ env.DIR_NAME }} > foo.txt
-          clamconf -n >> foo.txt
-      -
-        name: Clean up on failure
-        run: |
-          grep 'FOUND' foo.txt > FOUND.txt
+          clamscan -ir ${{ github.workspace }}/${{ env.DIR_NAME }} > results.txt
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -232,12 +213,4 @@ jobs:
         with:
           name: clamd-results
           path: |
-            foo.txt
-      -
-        name: Upload reports
-        if: failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
-        with:
-          name: clamd-found
-          path: |
-            FOUND.txt
+            results.txt
