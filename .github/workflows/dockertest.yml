@@ -175,7 +175,7 @@ jobs:
         name: Make the HDF file into a CSV
         run: |
           set -eu
-          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
+          saf convert hdf2csv -i trivy-results.hdf -o trivy-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
