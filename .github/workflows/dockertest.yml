@@ -159,7 +159,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}
-          format: 'json'
+          template: '@contrib/asff.tpl'
           output: 'trivy-results.json'
       -
         name: Make the JSON into a CSV
