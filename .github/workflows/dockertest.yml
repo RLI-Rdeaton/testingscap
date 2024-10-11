@@ -159,7 +159,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}
-          template: '@contrib/asff.tpl'
+          template: '@/contrib/asff.tpl'
           format: 'template'
           output: 'trivy-results.json'
       -
