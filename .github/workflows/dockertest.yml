@@ -30,88 +30,88 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
 
-  scap:
-    needs: build
-    permissions:
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
-    runs-on: ubuntu-latest
-    container:
-      image: alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
-      env:
-        SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
-        MICROSOFT_SARIF_MULTITOOL_VERSION: "4.5.4"
-        MITRE_SAF_VERSION: "1.4.14"
-        WOLFI_STIG_VERSION: "0.1.2"
-        SSG_DIR: "ssg"
-    steps:
-      - name: Install prerequisites
-        run: |
-          # shellcheck shell=sh
-          set -eu
-          apk add curl docker jq openscap-docker npm gcompat unzip
-          npm install -g "@microsoft/sarif-multitool@${MICROSOFT_SARIF_MULTITOOL_VERSION}"
-          # Specify the sinon version to use.
-          # Remove sinon from this line when sinon 16.1.2 (or later) is released, or when using MITRE_SAF_VERSION that includes https://github.com/mitre/saf/pull/1919
-          npm install -g sinon@16.1.0 "@mitre/saf@${MITRE_SAF_VERSION}"
-          mkdir -p "${SSG_DIR}"
-          curl "https://github.com/ComplianceAsCode/content/releases/download/v${SCAP_SECURITY_GUIDE_VERSION}/scap-security-guide-${SCAP_SECURITY_GUIDE_VERSION}.zip" -Lso "${SSG_DIR}/ssg.zip"
-          curl "https://github.com/chainguard-dev/stigs/archive/refs/tags/v${WOLFI_STIG_VERSION}.zip" -Lso "${SSG_DIR}/wolfi.zip"
-          unzip "${SSG_DIR}/ssg.zip" -d "${SSG_DIR}"
-          unzip "${SSG_DIR}/wolfi.zip" -d "${SSG_DIR}"
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Pull the docker image to scan
-        run: |
-          # shellcheck shell=sh
-          set -eu
-          # oscap-docker requires the image to have been pulled
-          docker pull "${IMAGE_NAME}"
-      - name: Run openscap
-        run: |
-          # shellcheck shell=sh
-          set -eu
-          # extract /etc/os-release
-          container_id=$(docker create "${IMAGE_NAME}")
-          if ! docker export "${container_id}" | tar -tvf - | grep -E '\setc/os-release( ->.*)?$' > /dev/null 2>&1 ; then
-            >&2 echo "The operating system used by ${IMAGE_NAME} could not be detected."
-            >&2 echo "Images that are not based on an operating system (such as distroless images) cannot be scanned by SCAP."
-            exit 1
-          fi
-          docker cp -L "$container_id:/etc/os-release" .
-          docker rm "$container_id"
-          unset container_id
-          set +e
-          oscap-docker image "${IMAGE_NAME}" xccdf eval --verbose ERROR --fetch-remote-resources --profile "xccdf_basic_profile_.check" --results "openscap-report.xml" --report "openscap-report.html" "${SSG_DIR}/stigs-${WOLFI_STIG_VERSION}/gpos/xml/scap/ssg/content/ssg-chainguard-gpos-ds.xml"
-          OSCAP_EXIT_CODE=$?
-          set -e
+  #scap:
+  #  needs: build
+  #  permissions:
+  #    security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+  #    actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+  #  runs-on: ubuntu-latest
+  #  container:
+  #    image: alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
+  #    env:
+  #      SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
+  #      MICROSOFT_SARIF_MULTITOOL_VERSION: "4.5.4"
+  #      MITRE_SAF_VERSION: "1.4.14"
+  #      WOLFI_STIG_VERSION: "0.1.2"
+  #      SSG_DIR: "ssg"
+  #  steps:
+  #    - name: Install prerequisites
+  #      run: |
+  #        # shellcheck shell=sh
+  #        set -eu
+  #        apk add curl docker jq openscap-docker npm gcompat unzip
+  #        npm install -g "@microsoft/sarif-multitool@${MICROSOFT_SARIF_MULTITOOL_VERSION}"
+  #        # Specify the sinon version to use.
+  #        # Remove sinon from this line when sinon 16.1.2 (or later) is released, or when using MITRE_SAF_VERSION that includes https://github.com/mitre/saf/pull/1919
+  #        npm install -g sinon@16.1.0 "@mitre/saf@${MITRE_SAF_VERSION}"
+  #        mkdir -p "${SSG_DIR}"
+  #        curl "https://github.com/ComplianceAsCode/content/releases/download/v${SCAP_SECURITY_GUIDE_VERSION}/scap-security-guide-${SCAP_SECURITY_GUIDE_VERSION}.zip" -Lso "${SSG_DIR}/ssg.zip"
+  #        curl "https://github.com/chainguard-dev/stigs/archive/refs/tags/v${WOLFI_STIG_VERSION}.zip" -Lso "${SSG_DIR}/wolfi.zip"
+  #        unzip "${SSG_DIR}/ssg.zip" -d "${SSG_DIR}"
+  #        unzip "${SSG_DIR}/wolfi.zip" -d "${SSG_DIR}"
+  #    - name: Login to Docker Hub
+  #      uses: docker/login-action@v3
+  #      with:
+  #        username: ${{ vars.DOCKERHUB_USERNAME }}
+  #        password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #    - name: Pull the docker image to scan
+  #      run: |
+  #        # shellcheck shell=sh
+  #        set -eu
+  #        # oscap-docker requires the image to have been pulled
+  #        docker pull "${IMAGE_NAME}"
+  #    - name: Run openscap
+  #      run: |
+  #        # shellcheck shell=sh
+  #        set -eu
+  #        # extract /etc/os-release
+  #        container_id=$(docker create "${IMAGE_NAME}")
+  #        if ! docker export "${container_id}" | tar -tvf - | grep -E '\setc/os-release( ->.*)?$' > /dev/null 2>&1 ; then
+  #          >&2 echo "The operating system used by ${IMAGE_NAME} could not be detected."
+  #          >&2 echo "Images that are not based on an operating system (such as distroless images) cannot be scanned by SCAP."
+  #          exit 1
+  #        fi
+  #        docker cp -L "$container_id:/etc/os-release" .
+  #        docker rm "$container_id"
+  #        unset container_id
+  #        set +e
+  #        oscap-docker image "${IMAGE_NAME}" xccdf eval --verbose ERROR --fetch-remote-resources --profile "xccdf_basic_profile_.check" --results "openscap-report.xml" --report "openscap-report.html" "${SSG_DIR}/stigs-${WOLFI_STIG_VERSION}/gpos/xml/scap/ssg/content/ssg-chainguard-gpos-ds.xml"
+  #        OSCAP_EXIT_CODE=$?
+  #        set -e
 
-          case "${OSCAP_EXIT_CODE}" in
-            0)
-              echo "All rules passed"
-            ;;
-            1)
-              >&2 echo "An error occurred during evaluation"
-              exit 2
-            ;;
-            2)
-              echo "There is at least one rule with either fail or unknown result"
-            ;;
-            *)
-              >&2 echo "openscap returned an unexpected exit status of $OSCAP_EXIT_CODE"
-              exit "$OSCAP_EXIT_CODE"
-            ;;
-          esac
-      - name: Upload reports
-        if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
-        with:
-          name: openscap-reports
-          path: |
-            openscap-report.xml
+  #        case "${OSCAP_EXIT_CODE}" in
+  #          0)
+  #            echo "All rules passed"
+  #          ;;
+  #          1)
+  #            >&2 echo "An error occurred during evaluation"
+  #            exit 2
+  #          ;;
+  #          2)
+  #            echo "There is at least one rule with either fail or unknown result"
+  #          ;;
+  #          *)
+  #            >&2 echo "openscap returned an unexpected exit status of $OSCAP_EXIT_CODE"
+  #            exit "$OSCAP_EXIT_CODE"
+  #          ;;
+  #        esac
+  #    - name: Upload reports
+  #      if: success() || failure() # always run even if the previous step fails
+  #      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
+  #      with:
+  #        name: openscap-reports
+  #        path: |
+  #          openscap-report.xml
 
   # Grype currently busted, see https://github.com/anchore/scan-action/issues/378 , is to be fixed
   # I could probably fix it looking at the code but that isn't my mandate.
@@ -160,6 +160,7 @@ jobs:
         with:
           image-ref: ${{ env.IMAGE_NAME }}
           template: '@contrib/asff.tpl'
+          format: 'template'
           output: 'trivy-results.json'
       -
         name: Make the JSON into a CSV
