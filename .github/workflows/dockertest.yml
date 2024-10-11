@@ -143,6 +143,7 @@ jobs:
     env:
       TRIVY_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
       TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+      MITRE_SAF_VERSION: "1.4.14"
     steps:
       -
         name: Install prerequisites
@@ -150,7 +151,6 @@ jobs:
           # shellcheck shell=sh
           set -eu
           sudo apt-get install -y npm
-          npm install -g "@microsoft/sarif-multitool@${MICROSOFT_SARIF_MULTITOOL_VERSION}"
           # Specify the sinon version to use.
           # Remove sinon from this line when sinon 16.1.2 (or later) is released, or when using MITRE_SAF_VERSION that includes https://github.com/mitre/saf/pull/1919
           npm install -g sinon@16.1.0 "@mitre/saf@${MITRE_SAF_VERSION}"
