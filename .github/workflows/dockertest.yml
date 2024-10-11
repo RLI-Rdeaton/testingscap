@@ -168,6 +168,10 @@ jobs:
           set -eu
           saf convert trivy2hdf -i trivy-results.json -o trivy-results.hdf
       -
+        name: REVAL YOUR secrets
+        run: |
+          ls -latr
+      -
         name: Make the HDF file into a CSV
         run: |
           set -eu
