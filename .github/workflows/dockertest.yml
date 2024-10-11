@@ -163,11 +163,15 @@ jobs:
           format: 'template'
           output: 'trivy-results.json'
       -
-        name: Make the JSON into a CSV
+        name: Make the Trivy ASFF JSON into an HDF file
         run: |
           set -eu
           saf convert trivy2hdf -i trivy-results.json -o trivy-results.hdf
-          saf convert hdf2csv -i trivy-results.json -o trivy-results.csv
+      -
+        name: Make the HDF file into a CSV
+        run: |
+          set -eu
+          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
