@@ -183,6 +183,8 @@ jobs:
         with:
           name: trivy-results
           path: |
+            trivy-results.json
+            trivy-results.hdf
             trivy-results.csv
 
   #snyk:
