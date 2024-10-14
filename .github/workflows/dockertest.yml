@@ -167,19 +167,20 @@ jobs:
         name: Make the Trivy ASFF JSON into an HDF file
         run: |
           set -eu
-          saf convert trivy2hdf -i trivy-results.json -o trivy-results.hdf
+          saf convert trivy2hdf -i trivy-results.json -o trivy-results
+          mv trivy-results/aquasecurity - aquasecurity.json ../trivy-results.hdf.json
       -
         name: REVAL YOUR secrets
         run: |
           ls -latr
       - name: wait are you serious?
-        run: | 
+        run: |
           ls -latr ./trivy-results.hdf
       -
         name: Make the HDF file into a CSV
         run: |
           set -eu
-          saf convert hdf2csv -i trivy-results.hdf -o trivy-results.csv
+          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -187,7 +188,7 @@ jobs:
         with:
           name: trivy-results
           path: |
-            trivy-results.json
+            trivy-results.hdf.json
             trivy-results.hdf
             trivy-results.csv
 
