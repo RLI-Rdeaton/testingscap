@@ -180,9 +180,16 @@ jobs:
         run: |
           set -eu
           ls -latr ${{ github.workspace }}/trivy-results/
-      - name: Get results into a place we can easily convert them
+      # OKAY SO WE NEED TO TEST FOR WHEN WE HAVE ZERO RESULTS IN THE TRIVY FILE BECAUSE THAT IS A THING THAT HAPPENS.
+      # Because the response for zero results is extremely well defined, this means we can use if/else logic to determine our path forward.
+      # We will first test for the case of zero vulnerabilities; if the file doesn't come back with zero vulns, we move forward with conversion.
+      - name: Test results and either create a stub file or convert them.
         run: |
-          cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
+          if grep -zoP '...."Findings": \[\n*....\]\n' trivy-results.json; then
+            echo THE GREP WORKS
+          else
+            echo CONVERTING FILE
+      #cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
       # Converting HDF to CSV is currently busted,
       # https://github.com/mitre/saf/issues/2925 for more info.
       #-
