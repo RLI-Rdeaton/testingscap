@@ -175,6 +175,11 @@ jobs:
         run: |
           set -eu
           ls -latr
+      -
+        name: What the actual heck 2
+        run: |
+          set -eu
+          ls -latr ${{ github.workspace }}/trivy-results/
       - name: Get results into a place we can easily convert them
         run: |
           cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
