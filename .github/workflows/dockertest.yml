@@ -176,7 +176,7 @@ jobs:
         run: |
           ls -latr ./trivy-results
           ls -latr ${{ github.workspace }}/trivy-results/
-          mv ${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json ${{ github.workspace }}/trivy-results.hdf.json
+          cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
       -
         name: Make the HDF file into a CSV
         run: |
