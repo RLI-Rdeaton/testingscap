@@ -189,6 +189,7 @@ jobs:
             echo THE GREP WORKS
           else
             echo CONVERTING FILE
+          fi
       #cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
       # Converting HDF to CSV is currently busted,
       # https://github.com/mitre/saf/issues/2925 for more info.
