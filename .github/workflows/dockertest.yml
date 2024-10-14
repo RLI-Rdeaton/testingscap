@@ -170,6 +170,11 @@ jobs:
         run: |
           set -eu
           saf convert trivy2hdf -i trivy-results.json -o trivy-results
+      -
+        name: What the actual heck
+        run: |
+          set -eu
+          ls -latr
       - name: Get results into a place we can easily convert them
         run: |
           cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
