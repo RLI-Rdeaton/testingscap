@@ -168,14 +168,15 @@ jobs:
         run: |
           set -eu
           saf convert trivy2hdf -i trivy-results.json -o trivy-results
-          mv trivy-results/aquasecurity - aquasecurity.json ../trivy-results.hdf.json
       -
         name: REVAL YOUR secrets
         run: |
           ls -latr
       - name: wait are you serious?
         run: |
-          ls -latr ./trivy-results.hdf
+          ls -latr ./trivy-results
+          ls -latr ${{ github.workspace }}/trivy-results/
+          mv ${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json ${{ github.workspace }}/trivy-results.hdf.json
       -
         name: Make the HDF file into a CSV
         run: |
