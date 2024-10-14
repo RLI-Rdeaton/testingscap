@@ -158,7 +158,8 @@ jobs:
         name: Scan image
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: ${{ env.IMAGE_NAME }}
+          #image-ref: ${{ env.IMAGE_NAME }}
+          image-ref: 'redhat/ubi9:9.4'
           template: '@/contrib/asff.tpl'
           format: 'template'
           output: 'trivy-results.json'
