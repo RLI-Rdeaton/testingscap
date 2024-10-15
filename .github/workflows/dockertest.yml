@@ -135,7 +135,7 @@ jobs:
   #      uses: github/codeql-action/upload-sarif@v2
   #      with:
   #        sarif_file: ${{ steps.grypescan.outputs.sarif }}
-  
+
   grype:
     needs: build
     runs-on: ubuntu-latest
