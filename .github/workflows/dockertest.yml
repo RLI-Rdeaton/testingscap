@@ -162,7 +162,7 @@ jobs:
         name: Grype scan
         run: |
           set -eu
-          grype chainguard/wolfi-base -o json --file grype.json
+          grype chainguard/wolfi-base -o json --file grype-results.json
       -
         name: Make the Grype JSON into an HDF file
         run: |
