@@ -157,11 +157,12 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # grype ${{ env.IMAGE_NAME }} -o json --file grype.json
       -
         name: Grype scan
         run: |
           set -eu
-          grype ${{ env.IMAGE_NAME }} -o json --file grype.json
+          grype chainguard/wolfi-base -o json --file grype.json
       -
         name: Make the Grype JSON into an HDF file
         run: |
@@ -172,6 +173,11 @@ jobs:
         run: |
           set -eu
           ls -latr
+      -
+        name: Make the HDF file into a CSV
+        run: |
+          set -eu
+          saf convert anchoregrype2hdf -i grype.json -o grype-results.hdf.json
 
 
 
