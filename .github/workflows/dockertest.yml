@@ -149,7 +149,7 @@ jobs:
         name: Signs of life
         run: |
           set -eu
-          grype --version
+          grype ${{ env.IMAGE_NAME }}
 
   #trivy:
   #  needs: build
