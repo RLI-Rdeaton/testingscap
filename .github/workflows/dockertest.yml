@@ -139,12 +139,18 @@ jobs:
   grype:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      MITRE_SAF_VERSION: "1.4.14"
     steps:
       -
         name: Install prerequisites
         run: |
           set -eu
           sudo curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          sudo apt-get install -y npm
+          # Specify the sinon version to use.
+          # Remove sinon from this line when sinon 16.1.2 (or later) is released, or when using MITRE_SAF_VERSION that includes https://github.com/mitre/saf/pull/1919
+          npm install -g sinon@16.1.0 "@mitre/saf@${MITRE_SAF_VERSION}"
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -152,10 +158,22 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Signs of life
+        name: Grype scan
         run: |
           set -eu
-          grype ${{ env.IMAGE_NAME }}
+          grype ${{ env.IMAGE_NAME }} -o json --file grype.json
+      -
+        name: Make the Grype JSON into an HDF file
+        run: |
+          set -eu
+          saf convert anchoregrype2hdf -i grype.json -o grype-results.hdf.json
+      -
+        name: Okay so what happened
+        run: |
+          set -eu
+          ls -latr
+
+
 
   #trivy:
   #  needs: build
