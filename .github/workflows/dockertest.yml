@@ -271,6 +271,18 @@ jobs:
           snyk --version
           snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json
       -
+        name: Make the Snyk JSON file into an HDF file
+        run: |
+          set -eu
+          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
+      # Converting HDF to CSV is currently busted,
+      # https://github.com/mitre/saf/issues/2925 for more info.
+      -
+        name: Make the HDF file into a CSV
+        run: |
+          set -eu
+          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
+      -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
         uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
