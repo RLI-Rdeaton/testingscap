@@ -263,7 +263,7 @@ jobs:
         name: Signs of life
         run: |
           snyk --version
-          snyk test
+          snyk container test --help
 
   #clam:
   #  needs: build
