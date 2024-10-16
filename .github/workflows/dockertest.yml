@@ -250,6 +250,8 @@ jobs:
   snyk:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       -
         name: Install prerequisites
@@ -261,6 +263,7 @@ jobs:
         name: Signs of life
         run: |
           snyk --version
+          snyk test
 
   #clam:
   #  needs: build
