@@ -117,6 +117,8 @@ jobs:
   trufflehog:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      MITRE_SAF_VERSION: "1.4.14"
     steps:
       -
         name: Install prerequisites
