@@ -252,13 +252,19 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      MITRE_SAF_VERSION: "1.4.14"
     steps:
       -
         name: Install prerequisites
         run: |
+          set -eu
           curl --compressed https://downloads.snyk.io/cli/stable/snyk-linux -o snyk
           sudo chmod +x ./snyk
           sudo mv ./snyk /usr/local/bin/
+          sudo apt-get install -y npm
+          # Specify the sinon version to use.
+          # Remove sinon from this line when sinon 16.1.2 (or later) is released, or when using MITRE_SAF_VERSION that includes https://github.com/mitre/saf/pull/1919
+          npm install -g sinon@16.1.0 "@mitre/saf@${MITRE_SAF_VERSION}"
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
