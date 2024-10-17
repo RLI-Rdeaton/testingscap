@@ -114,25 +114,54 @@ jobs:
   #        path: |
   #          openscap-report.xml
 
-  grype:
+  trufflehog:
     needs: build
     runs-on: ubuntu-latest
     steps:
       -
-        name: Scan image
-        uses: anchore/scan-action@v5.0.1
-        id: grypescan
-        with:
-          registry-username: ${{ vars.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
-          image: ${{ env.IMAGE_NAME }}
-          fail-build: false
+        name: Install prerequisites
+        run: |
+          set -eu
+          sudo apt-get install -y npm
+          # Specify the sinon version to use.
+          # Remove sinon from this line when sinon 16.1.2 (or later) is released, or when using MITRE_SAF_VERSION that includes https://github.com/mitre/saf/pull/1919
+          npm install -g "@mitre/saf@${MITRE_SAF_VERSION}"
+          sudo curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sudo sh -s -- -b /usr/local/bin
       -
-        name: upload Anchore scan SARIF report
-        uses: github/codeql-action/upload-sarif@v2
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          sarif_file: ${{ steps.grypescan.outputs.sarif }}
-
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # grype chainguard/wolfi-base -o json --file grype-results.json
+      # grype ${{ env.IMAGE_NAME }} -o json --file grype-results.json
+      -
+        name: Trufflehog scan
+        run: |
+          set -eu
+          trufflehog docker --image ${{ env.IMAGE_NAME }} --only-verified --json > trufflehog-results.json
+      -
+        name: Make the Grype JSON into an HDF file
+        run: |
+          set -eu
+          saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
+      # Converting HDF to CSV is currently busted,
+      # https://github.com/mitre/saf/issues/2925 for more info.
+      #-
+      #  name: Make the HDF file into a CSV
+      #  run: |
+      #    set -eu
+      #    saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
+      -
+        name: Upload reports
+        if: success() || failure() # always run even if the previous step fails
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
+        with:
+          name: grype-results
+          path: |
+            trufflehog-results.json
+            trufflehog-results.hdf.json
+            trufflehog-results.csv
 
   #grype:
   #  needs: build
@@ -252,18 +281,6 @@ jobs:
   #          trivy-results.hdf.json
   #          trivy-results.hdf
   #          trivy-results.csv
-
-  #snyk:
-  #  needs: build
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    -
-  #      name: Scan image with Snyk
-  #      uses: snyk/actions/docker@master
-  #      env:
-  #        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #      with:
-  #        image: ${{ env.IMAGE_NAME }}
 
   #snyk:
   #  needs: build
