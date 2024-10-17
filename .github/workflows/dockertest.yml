@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MITRE_SAF_VERSION: "1.4.14"
-      disposable_secret: ${{ secrets.DISPOSABLE }}
+      DISPOSABLE: ${{ secrets.DISPOSABLE }}
     steps:
       -
         name: Install prerequisites
@@ -134,7 +134,7 @@ jobs:
         name: Trufflehog scan
         run: |
           set -eu
-          trufflehog docker --image ${{ env.IMAGE_NAME }} --no-update --only-verified --json --token "$disposable_secret" > trufflehog-results.json
+          trufflehog docker --image ${{ env.IMAGE_NAME }} --no-update --only-verified --json --token "${DISPOSABLE}" > trufflehog-results.json
       -
         name: Make the Grype JSON into an HDF file
         run: |
