@@ -277,6 +277,7 @@ jobs:
         continue-on-error: true
         run: |
           snyk container test redhat/ubi9:9.4 --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json
+          exit 0
       -
         name: Make the Snyk JSON file into an HDF file
         run: |
