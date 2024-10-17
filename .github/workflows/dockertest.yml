@@ -272,22 +272,21 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Signs of life
+        name: Scan using Snyk
         run: |
-          snyk --version
           snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json
       -
         name: Make the Snyk JSON file into an HDF file
         run: |
           set -eu
-          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
+          saf convert snyk2hdf -i snyk-output.json -o snyk-output.hdf.json
       # Converting HDF to CSV is currently busted,
       # https://github.com/mitre/saf/issues/2925 for more info.
       -
         name: Make the HDF file into a CSV
         run: |
           set -eu
-          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
+          saf convert hdf2csv -i snyk-output.hdf.json -o snyk-output.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -296,6 +295,8 @@ jobs:
           name: snyk-results
           path: |
             snyk-output.json
+            snyk-output.hdf.json
+            snyk-output.csv
   #clam:
   #  needs: build
   #  permissions:
