@@ -274,7 +274,8 @@ jobs:
       -
         name: Scan using Snyk
         run: |
-          snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json
+          snyk container test redhat/ubi9:9.4 --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json
+          #snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json
       -
         name: Make the Snyk JSON file into an HDF file
         run: |
