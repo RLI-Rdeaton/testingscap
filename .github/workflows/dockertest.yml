@@ -141,7 +141,7 @@ jobs:
         name: Trufflehog scan
         run: |
           set -eu
-          sudo trufflehog docker --image ${{ env.IMAGE_NAME }} --only-verified --json ----token=${{ secrets.DOCKERHUB_TOKEN }} > trufflehog-results.json
+          sudo trufflehog docker --image ${{ env.IMAGE_NAME }} --only-verified --json --token=${{ secrets.DOCKERHUB_TOKEN }} > trufflehog-results.json
       -
         name: Make the Grype JSON into an HDF file
         run: |
