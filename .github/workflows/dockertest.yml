@@ -154,7 +154,7 @@ jobs:
         name: Trufflehog scan
         run: |
           set -eu
-          trufflehog filesystem ${{ github.workspace }}/${{ env.DIR_NAME }} --no-update --only-verified --json --archive-timeout 600 &> trufflehog-results.json
+          trufflehog filesystem ${{ github.workspace }}/${{ env.DIR_NAME }} --no-update --only-verified --json --archive-timeout 600s &> trufflehog-results.json
           ls -latr
           cat trufflehog-results.json
       -
