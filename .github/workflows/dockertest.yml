@@ -135,6 +135,8 @@ jobs:
         run: |
           set -eu
           trufflehog docker --image ${{ env.IMAGE_NAME }} --no-update --only-verified --json --token "${TOKEN}" &> trufflehog-results.json
+          ls -latr
+          cat trufflehog-results.json
       -
         name: Make the Grype JSON into an HDF file
         run: |
