@@ -143,7 +143,7 @@ jobs:
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
           #CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
-          CONT_ID=$(docker create trufflesecurity/secrets)
+          CONT_ID=$(DOCKER_BUILDKIT=0 docker create trufflesecurity/secrets)
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
           tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}/${{ env.DIR_NAME }}
       #-
