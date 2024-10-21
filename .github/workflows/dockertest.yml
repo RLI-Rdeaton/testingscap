@@ -67,7 +67,7 @@ jobs:
        - name: Run openscap
          run: |
           set -eu
-           extract /etc/os-release
+          extract /etc/os-release
           container_id=$(docker create "${IMAGE_NAME}")
           if ! docker export "${container_id}" | tar -tvf - | grep -E '\setc/os-release( ->.*)?$' > /dev/null 2>&1 ; then
             >&2 echo "The operating system used by ${IMAGE_NAME} could not be detected."
