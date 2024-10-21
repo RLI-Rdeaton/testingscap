@@ -207,7 +207,8 @@ jobs:
         name: Grype scan
         run: |
           set -eu
-          grype ${{ env.IMAGE_NAME }} -o json --file grype-results.json
+          grype ${{ env.IMAGE_NAME }} -o json  --file grype-results.json
+          grype ${{ env.IMAGE_NAME }} -o csv.tmpl --file grype-testing.csv
       -
         name: Make the Grype JSON into an HDF file
         run: |
@@ -230,6 +231,7 @@ jobs:
             grype-results.json
             grype-results.hdf.json
             grype-results.csv
+            grype-testing.csv
 
 
   trivy:
