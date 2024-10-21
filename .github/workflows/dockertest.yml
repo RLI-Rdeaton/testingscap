@@ -97,6 +97,19 @@ jobs:
             ;;
           esac
 
+       -
+        name: Make the Trufflehog JSON into an HDF file
+        run: |
+          set -eu
+          saf convert xccdf_results2hdf -i openscap-report.xml -o openscap-report.hdf.json
+
+      # Converting HDF to CSV is currently busted,
+      # https://github.com/mitre/saf/issues/2925 for more info.
+       -
+        name: Make the HDF file into a CSV
+        run: |
+          set -eu
+          saf convert hdf2csv -i openscap-report.hdf.json -o openscap-report.csv
       # Converting Openscap to HDF to CSV is curtrently busted, see
       # https://github.com/mitre/saf/issues/2925 for more info.
        - name: Upload reports
@@ -106,6 +119,8 @@ jobs:
            name: openscap-reports
            path: |
              openscap-report.xml
+             openscap-report.hdf.json
+             openscap-report.csv
 
   trufflehog:
     needs: build
