@@ -208,7 +208,7 @@ jobs:
         run: |
           set -eu
           grype ${{ env.IMAGE_NAME }} -o json  --file grype-results.json
-          grype ${{ env.IMAGE_NAME }} -o csv.tmpl --file grype-testing.csv
+          grype ${{ env.IMAGE_NAME }} -o template -t csv.tmpl --file grype-testing.csv
       -
         name: Make the Grype JSON into an HDF file
         run: |
