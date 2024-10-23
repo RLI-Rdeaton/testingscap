@@ -159,11 +159,11 @@ jobs:
           ls -latr
           cat trufflehog-results.json
      # SAF is entirely busted for Trufflehog, https://github.com/mitre/saf/issues/2982
-     # -
-     #  name: Make the Trufflehog JSON into an HDF file
-     #  run: |
-     #    set -eu
-     #    saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
+      -
+       name: Make the Trufflehog JSON into an HDF file
+       run: |
+         set -eu
+         saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
      # Converting HDF to CSV is currently busted,
      # https://github.com/mitre/saf/issues/2925 for more info.
      #-
@@ -370,12 +370,12 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
       -
         name: Create, export, then extract to the filesystem
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          # CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
           CONT_ID=$(docker create modusmundi/eicartest})
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
           tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}/${{ env.DIR_NAME }}
