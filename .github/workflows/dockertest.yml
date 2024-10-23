@@ -126,7 +126,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      MITRE_SAF_VERSION: "1.4.14"
+      MITRE_SAF_VERSION: "1.4.15"
       EXPORT_NAME: "build.tar"
       DIR_NAME: "build"
     steps:
