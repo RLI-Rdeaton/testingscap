@@ -166,7 +166,7 @@ jobs:
          set -eu
 
           set -eu
-          if grep -zoP '[]' trufflehog-results.json; then
+          if grep -zoP '\[\]' trivy-results.json; then
             echo THE GREP WORKS
             echo YOU NEED TO FIGURE OUT WHAT YOU WANT TO PASS FOR CSV HERE
             echo TREMENDOUS EFFORT
