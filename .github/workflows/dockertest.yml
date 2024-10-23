@@ -98,7 +98,7 @@ jobs:
           esac
 
        -
-        name: Make the Trufflehog JSON into an HDF file
+        name: Make the XCCDF into an HDF file
         run: |
           set -eu
           saf convert xccdf_results2hdf -i openscap-report.xml -o openscap-report.hdf.json
@@ -156,7 +156,7 @@ jobs:
         name: Trufflehog scan
         run: |
           set -eu
-          trufflehog filesystem ${{ github.workspace }}/${{ env.DIR_NAME }} --no-update --only-verified --json --force-skip-archives | grep -vwE "{\"level\":" | jq --slurp . &> trufflehog-results.json
+          trufflehog filesystem ${{ github.workspace }}/${{ env.DIR_NAME }} --no-update --only-verified --json --force-skip-archives | | grep -wE "\{\"SourceMetadata\":" | jq --slurp . > trufflehog-results.json
           ls -latr
           cat trufflehog-results.json
      # SAF is entirely busted for Trufflehog, https://github.com/mitre/saf/issues/2982
@@ -328,7 +328,7 @@ jobs:
         # 'redhat/ubi9:9.4'
         # ${{ env.IMAGE_NAME }}
         run: |
-          snyk container test redhat/ubi9:9.4 --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json || true
+          snyk container test ${{ env.IMAGE_NAME }}--app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json || true
       -
         name: Make the Snyk JSON file into an HDF file
         run: |
