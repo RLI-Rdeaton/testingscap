@@ -143,12 +143,13 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      #CONT_ID=$(docker create node:8.11)
       -
         name: Create, export, then extract to the filesystem
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
+          CONT_ID=$(docker create node:8.11)
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
           tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}/${{ env.DIR_NAME }}
       -
