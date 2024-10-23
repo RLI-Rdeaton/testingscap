@@ -161,10 +161,20 @@ jobs:
           cat trufflehog-results.json
      # SAF is entirely busted for Trufflehog, https://github.com/mitre/saf/issues/2982
       -
-       name: Make the Trufflehog JSON into an HDF file
+       name: Make the Trufflehog JSON into an HDF file OR make a stub file
        run: |
          set -eu
-         saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
+
+          set -eu
+          if grep -zoP '[]' trufflehog-results.json; then
+            echo THE GREP WORKS
+            echo YOU NEED TO FIGURE OUT WHAT YOU WANT TO PASS FOR CSV HERE
+            echo TREMENDOUS EFFORT
+          else
+            echo CONVERTING FILE - THIS IS GOING TO FAIL UNTIL MITRE FIXES THINGS
+            saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
+            saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
+          fi
      # Converting HDF to CSV is currently busted,
      # https://github.com/mitre/saf/issues/2925 for more info.
      #-
