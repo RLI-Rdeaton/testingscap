@@ -150,7 +150,7 @@ jobs:
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          CONT_ID=$(docker create node:8.11)
+          CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
           tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}/${{ env.DIR_NAME }}
       -
@@ -164,17 +164,17 @@ jobs:
        name: Make the Trufflehog JSON into an HDF file OR make a stub file
        run: |
          set -eu
-
-          set -eu
-          if grep -zoP '\[\]' trufflehog-results.json; then
-            echo THE GREP WORKS
-            echo YOU NEED TO FIGURE OUT WHAT YOU WANT TO PASS FOR CSV HERE
-            echo TREMENDOUS EFFORT
-          else
-            echo CONVERTING FILE - THIS IS GOING TO FAIL UNTIL MITRE FIXES THINGS
-            saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
-            saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
-          fi
+         if grep -zoP '\[\]' trufflehog-results.json; then
+           echo THE GREP WORKS
+           echo YOU NEED TO FIGURE OUT WHAT YOU WANT TO PASS FOR CSV HERE
+           echo TREMENDOUS EFFORT
+            echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > trufflehog-results.csv
+            echo "trufflehog-results.hdf.json,Passed,Trufflehog/0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trufflehog because zero issues were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> trufflehog-results.csv
+         else
+           echo CONVERTING FILE - THIS IS GOING TO FAIL UNTIL MITRE FIXES THINGS
+           saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
+           saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
+         fi
      # Converting HDF to CSV is currently busted,
      # https://github.com/mitre/saf/issues/2925 for more info.
      #-
@@ -268,7 +268,8 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           #image-ref: ${{ env.IMAGE_NAME }}
-          image-ref: 'redhat/ubi9:9.4'
+          # image-ref: 'redhat/ubi9:9.4'
+          image-ref: ${{ env.IMAGE_NAME }}
           template: '@/contrib/asff.tpl'
           format: 'template'
           output: 'trivy-results.json'
@@ -287,6 +288,8 @@ jobs:
             echo THE GREP WORKS
             echo YOU NEED TO FIGURE OUT WHAT YOU WANT TO PASS FOR CSV HERE
             echo TREMENDOUS EFFORT
+            echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > trivy-results.csv
+            echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> trivy-results.csv
           else
             echo CONVERTING FILE - THIS IS GOING TO FAIL UNTIL MITRE FIXES THINGS
             cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
@@ -338,7 +341,7 @@ jobs:
         # 'redhat/ubi9:9.4'
         # ${{ env.IMAGE_NAME }}
         run: |
-          snyk container test ${{ env.IMAGE_NAME }}--app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json || true
+          snyk container test redhat/ubi9:9.4 --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json || true
       -
         name: Make the Snyk JSON file into an HDF file
         run: |
