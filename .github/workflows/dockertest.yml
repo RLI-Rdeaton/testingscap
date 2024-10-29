@@ -159,7 +159,6 @@ jobs:
           trufflehog filesystem ${{ github.workspace }}/${{ env.DIR_NAME }} --no-update --only-verified --json --force-skip-archives | grep -wE "\{\"SourceMetadata\":" | jq --slurp . > trufflehog-results.json
           ls -latr
           cat trufflehog-results.json
-     # SAF is entirely busted for Trufflehog, https://github.com/mitre/saf/issues/2982
       -
        name: Make the Trufflehog JSON into an HDF file OR make a stub file
        run: |
@@ -177,11 +176,11 @@ jobs:
          fi
      # Converting HDF to CSV is currently busted,
      # https://github.com/mitre/saf/issues/2925 for more info.
-     #-
-     #  name: Make the HDF file into a CSV
-     #  run: |
-     #    set -eu
-     #    saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
+      -
+       name: Make the HDF file into a CSV
+       run: |
+         set -eu
+         saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -228,11 +227,11 @@ jobs:
           saf convert anchoregrype2hdf -i grype-results.json -o grype-results.hdf.json
       # Converting HDF to CSV is currently busted,
       # https://github.com/mitre/saf/issues/2925 for more info.
-      #-
-      #  name: Make the HDF file into a CSV
-      #  run: |
-      #    set -eu
-      #    saf convert hdf2csv -i grype-results.hdf.json -o grype-results.csv
+      -
+        name: Make the HDF file into a CSV
+        run: |
+          set -eu
+          saf convert hdf2csv -i grype-results.hdf.json -o grype-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -295,11 +294,11 @@ jobs:
           fi
       # Converting HDF to CSV is currently busted,
       # https://github.com/mitre/saf/issues/2925 for more info.
-      #-
-      #  name: Make the HDF file into a CSV
-      #  run: |
-      #    set -eu
-      #    saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
+      -
+        name: Make the HDF file into a CSV
+        run: |
+          set -eu
+          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -347,11 +346,11 @@ jobs:
           saf convert snyk2hdf -i snyk-output.json -o snyk-output.hdf.json
       # Converting HDF to CSV is currently busted,
       # https://github.com/mitre/saf/issues/2925 for more info.
-      #-
-      #  name: Make the HDF file into a CSV
-      #  run: |
-      #    set -eu
-      #    saf convert hdf2csv -i snyk-output.hdf.json -o snyk-output.csv
+      -
+        name: Make the HDF file into a CSV
+        run: |
+          set -eu
+          saf convert hdf2csv -i snyk-output.hdf.json -o snyk-output.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
