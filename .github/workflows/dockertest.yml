@@ -269,7 +269,8 @@ jobs:
         with:
           #image-ref: ${{ env.IMAGE_NAME }}
           # image-ref: 'redhat/ubi9:9.4'
-          image-ref: ${{ env.IMAGE_NAME }}
+          #image-ref: radiantone/fid:7.4.9
+          image-ref: radiantone/fid:7.4.9
           template: '@/contrib/asff.tpl'
           format: 'template'
           output: 'trivy-results.json'
@@ -285,9 +286,6 @@ jobs:
         run: |
           set -eu
           if grep -zoP '...."Findings": \[\n*....\]\n' trivy-results.json; then
-            echo THE GREP WORKS
-            echo YOU NEED TO FIGURE OUT WHAT YOU WANT TO PASS FOR CSV HERE
-            echo TREMENDOUS EFFORT
             echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > trivy-results.csv
             echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> trivy-results.csv
           else
