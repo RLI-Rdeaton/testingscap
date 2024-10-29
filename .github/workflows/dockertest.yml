@@ -174,13 +174,6 @@ jobs:
            saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
            saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
          fi
-     # Converting HDF to CSV is currently busted,
-     # https://github.com/mitre/saf/issues/2925 for more info.
-      -
-       name: Make the HDF file into a CSV
-       run: |
-         set -eu
-         saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
