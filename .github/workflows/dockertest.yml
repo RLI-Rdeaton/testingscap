@@ -7,6 +7,9 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
 
 jobs:
   build:
@@ -126,7 +129,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      MITRE_SAF_VERSION: "1.4.15"
+      MITRE_SAF_VERSION: "1.4.16"
       EXPORT_NAME: "build.tar"
       DIR_NAME: "build"
     steps:
@@ -236,6 +239,13 @@ jobs:
             grype-results.hdf.json
             grype-results.csv
             grype-testing.csv
+      -
+        name: Upload to S3
+        run: |
+          aws s3 cp ./grype-results.csv s3://grafana-flow-testing/grype/
+
+
+
 
 
   trivy:
