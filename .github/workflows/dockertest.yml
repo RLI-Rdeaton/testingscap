@@ -252,7 +252,8 @@ jobs:
         name: Access cloned repository content
         run: |
           cp ./grype-results.csv ./testingfeed/grype-results.csv
-          ls ./testingfeed/
+          ls -latr ./testingfeed/
+          cd ./testingfeed/
           git config --global user.email ${{ secrets.GH_email }}
           git config --global user.name ${{ secrets.GH_name }}
           git add grype-results.csv
