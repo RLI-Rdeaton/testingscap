@@ -233,9 +233,9 @@ jobs:
         with:
           name: ${{ env.OUTPUT_NAME }}
           path: |
-            "${{ env.OUTPUT_NAME }}.json"
-            "${{ env.OUTPUT_NAME }}.hdf.json"
-            "${{ env.OUTPUT_NAME }}.csv"
+            ${{ env.OUTPUT_NAME }}.json
+            ${{ env.OUTPUT_NAME }}.hdf.json
+            ${{ env.OUTPUT_NAME }}.csv
       #-
       #  name: Upload to S3
       #  run: |
