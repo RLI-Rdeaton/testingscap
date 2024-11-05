@@ -300,17 +300,22 @@ jobs:
         name: Make the Trivy ASFF JSON into an HDF file
         run: |
           set -eu
-          saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }} -o trivy-results
+          ls -latr
+          saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }} -o ${{ env.OUTPUT_NAME }}
       # OKAY SO WE NEED TO TEST FOR WHEN WE HAVE ZERO RESULTS IN THE TRIVY FILE BECAUSE THAT IS A THING THAT HAPPENS.
       # Because the response for zero results is extremely well defined, this means we can use if/else logic to determine our path forward.
       # We will first test for the case of zero vulnerabilities; if the file doesn't come back with zero vulns, we move forward with conversion.
       - name: Test results and either create a stub file or convert them.
         run: |
           set -eu
+          ls -latr
           if grep -zoP '...."Findings": \[\n*....\]\n' trivy-results.json; then
             echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > trivy-results.csv
             echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> trivy-results.csv
           else
+            cd ./${{ env.OUTPUT_NAME }}
+            ls -latr
+            cd ..
             cp '${{ github.workspace }}/${{ env.OUTPUT_NAME }}/aquasecurity - aquasecurity.json' ${{ github.workspace }}/${{ env.OUTPUT_NAME }}.hdf.json
             saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
           fi
