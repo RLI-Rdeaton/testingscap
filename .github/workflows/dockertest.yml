@@ -193,6 +193,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MITRE_SAF_VERSION: "1.4.16"
+      OUTPUT_NAME: "grype-results"
     steps:
       -
         name: Install prerequisites
@@ -214,17 +215,17 @@ jobs:
         name: Grype scan
         run: |
           set -eu
-          grype ${{ env.IMAGE_NAME }} -o json  --file grype-results.json
+          grype ${{ env.IMAGE_NAME }} -o json  --file ${OUTPUT_NAME}.json
       -
         name: Make the Grype JSON into an HDF file
         run: |
           set -eu
-          saf convert anchoregrype2hdf -i grype-results.json -o grype-results.hdf.json
+          saf convert anchoregrype2hdf -i ${OUTPUT_NAME}.json -o ${OUTPUT_NAME}.hdf.json
       -
         name: Make the HDF file into a CSV
         run: |
           set -eu
-          saf convert hdf2csv -i grype-results.hdf.json -o grype-results.csv
+          saf convert hdf2csv -i ${OUTPUT_NAME}.hdf.json -o ${OUTPUT_NAME}.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -232,9 +233,9 @@ jobs:
         with:
           name: grype-results
           path: |
-            grype-results.json
-            grype-results.hdf.json
-            grype-results.csv
+            ${OUTPUT_NAME}.json
+            ${OUTPUT_NAME}.hdf.json
+            ${OUTPUT_NAME}.csv
       #-
       #  name: Upload to S3
       #  run: |
@@ -251,12 +252,10 @@ jobs:
       -
         name: Access cloned repository content
         run: |
-          cp ./grype-results.csv ./testingfeed/grype-results.csv
-          ls -latr ./testingfeed/
-          cd ./testingfeed/
+          cp ./${OUTPUT_NAME}.csv ./testingfeed/${OUTPUT_NAME}.csv
           git config --global user.email ${{ secrets.GH_email }}
           git config --global user.name ${{ secrets.GH_name }}
-          git add grype-results.csv
+          git add ${OUTPUT_NAME}.csv
           git commit -m "Update Grype results"
       -
         name: Push to Reporting Repo
