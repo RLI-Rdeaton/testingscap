@@ -219,8 +219,9 @@ jobs:
       -
         name: Make the Grype JSON into an HDF file
         run: |
+          ls -latr
           set -eu
-          saf convert anchoregrype2hdf -i ${OUTPUT_NAME}.json" -o "${OUTPUT_NAME}.hdf.json"
+          saf convert anchoregrype2hdf -i "${OUTPUT_NAME}.json" -o "${OUTPUT_NAME}.hdf.json"
       -
         name: Make the HDF file into a CSV
         run: |
