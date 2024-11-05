@@ -202,8 +202,6 @@ jobs:
           sudo curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
           sudo apt-get install -y npm
           npm install -g "@mitre/saf@${MITRE_SAF_VERSION}"
-          echo "${OUTPUT_NAME}.json"
-          echo ${OUTPUT_NAME}
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -216,28 +214,28 @@ jobs:
         name: Grype scan
         run: |
           set -eu
-          grype ${{ env.IMAGE_NAME }} -o json  --file "${OUTPUT_NAME}.json"
+          grype ${{ env.IMAGE_NAME }} -o json  --file "${{ env.OUTPUT_NAME }}.json"
       -
         name: Make the Grype JSON into an HDF file
         run: |
           ls -latr
           set -eu
-          saf convert anchoregrype2hdf -i "${OUTPUT_NAME}.json" -o "${OUTPUT_NAME}.hdf.json"
+          saf convert anchoregrype2hdf -i "${{ env.OUTPUT_NAME }}.json" -o "${{ env.OUTPUT_NAME }}.hdf.json"
       -
         name: Make the HDF file into a CSV
         run: |
           set -eu
-          saf convert hdf2csv -i "${OUTPUT_NAME}.hdf.json" -o "${OUTPUT_NAME}.csv"
+          saf convert hdf2csv -i "${{ env.OUTPUT_NAME }}.hdf.json" -o "${{ env.OUTPUT_NAME }}.csv"
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
         uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
         with:
-          name: grype-results
+          name: ${{ env.OUTPUT_NAME }}
           path: |
-            "${OUTPUT_NAME}.json"
-            "${OUTPUT_NAME}.hdf.json"
-            "${OUTPUT_NAME}.csv"
+            "${{ env.OUTPUT_NAME }}.json"
+            "${{ env.OUTPUT_NAME }}.hdf.json"
+            "${{ env.OUTPUT_NAME }}.csv"
       #-
       #  name: Upload to S3
       #  run: |
@@ -254,10 +252,10 @@ jobs:
       -
         name: Access cloned repository content
         run: |
-          cp ./${OUTPUT_NAME}.csv ./testingfeed/"${OUTPUT_NAME}.csv"
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./testingfeed/${{ env.OUTPUT_NAME }}.csv"
           git config --global user.email ${{ secrets.GH_email }}
           git config --global user.name ${{ secrets.GH_name }}
-          git add "${OUTPUT_NAME}.csv"
+          git add "${{ env.OUTPUT_NAME }}.csv"
           git commit -m "Update Grype results"
       -
         name: Push to Reporting Repo
