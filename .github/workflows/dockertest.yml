@@ -277,6 +277,7 @@ jobs:
       TRIVY_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
       TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
       MITRE_SAF_VERSION: "1.4.16"
+      OUTPUT_NAME: "trivy-results"
     steps:
       -
         name: Install prerequisites
@@ -294,12 +295,12 @@ jobs:
           image-ref: radiantone/fid:7.4.9
           template: '@/contrib/asff.tpl'
           format: 'template'
-          output: 'trivy-results.json'
+          output: '${{ env.OUTPUT_NAME }}.json'
       -
         name: Make the Trivy ASFF JSON into an HDF file
         run: |
           set -eu
-          saf convert trivy2hdf -i trivy-results.json -o trivy-results
+          saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }} -o trivy-results
       # OKAY SO WE NEED TO TEST FOR WHEN WE HAVE ZERO RESULTS IN THE TRIVY FILE BECAUSE THAT IS A THING THAT HAPPENS.
       # Because the response for zero results is extremely well defined, this means we can use if/else logic to determine our path forward.
       # We will first test for the case of zero vulnerabilities; if the file doesn't come back with zero vulns, we move forward with conversion.
@@ -310,17 +311,9 @@ jobs:
             echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > trivy-results.csv
             echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> trivy-results.csv
           else
-            echo CONVERTING FILE - THIS IS GOING TO FAIL UNTIL MITRE FIXES THINGS
-            cp '${{ github.workspace }}/trivy-results/aquasecurity - aquasecurity.json' ${{ github.workspace }}/trivy-results.hdf.json
-            saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
+            cp '${{ github.workspace }}/${{ env.OUTPUT_NAME }}/aquasecurity - aquasecurity.json' ${{ github.workspace }}/${{ env.OUTPUT_NAME }}.hdf.json
+            saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
           fi
-      # Converting HDF to CSV is currently busted,
-      # https://github.com/mitre/saf/issues/2925 for more info.
-      -
-        name: Make the HDF file into a CSV
-        run: |
-          set -eu
-          saf convert hdf2csv -i trivy-results.hdf.json -o trivy-results.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -328,9 +321,8 @@ jobs:
         with:
           name: trivy-results
           path: |
-            trivy-results.hdf.json
-            trivy-results.hdf
-            trivy-results.csv
+            ${{ env.OUTPUT_NAME }}.hdf.json
+            ${{ env.OUTPUT_NAME }}.csv
 
   snyk:
     needs: build
