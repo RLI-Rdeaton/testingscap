@@ -292,16 +292,16 @@ jobs:
           #image-ref: ${{ env.IMAGE_NAME }}
           # image-ref: 'redhat/ubi9:9.4'
           #image-ref: radiantone/fid:7.4.9
-          image-ref: radiantone/fid:7.4.9
+          image-ref: redhat/ubi9:9.4
           template: '@/contrib/asff.tpl'
           format: 'template'
           output: '${{ env.OUTPUT_NAME }}.json'
-      -
-        name: Make the Trivy ASFF JSON into an HDF file
-        run: |
-          set -eu
-          ls -latr
-          saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }} -o ${{ env.OUTPUT_NAME }}
+      #-
+      #  name: Make the Trivy ASFF JSON into an HDF file
+      #  run: |
+      #    set -eu
+      #    ls -latr
+      #    saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }} -o ${{ env.OUTPUT_NAME }}
       # OKAY SO WE NEED TO TEST FOR WHEN WE HAVE ZERO RESULTS IN THE TRIVY FILE BECAUSE THAT IS A THING THAT HAPPENS.
       # Because the response for zero results is extremely well defined, this means we can use if/else logic to determine our path forward.
       # We will first test for the case of zero vulnerabilities; if the file doesn't come back with zero vulns, we move forward with conversion.
@@ -310,12 +310,12 @@ jobs:
           set -eu
           ls -latr
           if grep -zoP '...."Findings": \[\n*....\]\n' trivy-results.json; then
-            echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > trivy-results.csv
-            echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> trivy-results.csv
+            echo "NO FINDINGS, CREATING STUB"
+            echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
+            echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
           else
-            cd ./${{ env.OUTPUT_NAME }}
-            ls -latr
-            cd ..
+            echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
+            saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }} -o ${{ env.OUTPUT_NAME }}
             cp '${{ github.workspace }}/${{ env.OUTPUT_NAME }}/aquasecurity - aquasecurity.json' ${{ github.workspace }}/${{ env.OUTPUT_NAME }}.hdf.json
             saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
           fi
