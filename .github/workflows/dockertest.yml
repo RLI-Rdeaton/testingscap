@@ -215,14 +215,11 @@ jobs:
         run: |
           set -eu
           grype ${{ env.IMAGE_NAME }} -o json  --file grype-results.json
-          grype ${{ env.IMAGE_NAME }} -o template -t csv.tmpl --file grype-testing.csv
       -
         name: Make the Grype JSON into an HDF file
         run: |
           set -eu
           saf convert anchoregrype2hdf -i grype-results.json -o grype-results.hdf.json
-      # Converting HDF to CSV is currently busted,
-      # https://github.com/mitre/saf/issues/2925 for more info.
       -
         name: Make the HDF file into a CSV
         run: |
@@ -238,14 +235,34 @@ jobs:
             grype-results.json
             grype-results.hdf.json
             grype-results.csv
-            grype-testing.csv
+      #-
+      #  name: Upload to S3
+      #  run: |
+      #    aws s3 cp ./grype-results.csv s3://grafana-flow-testing/
       -
-        name: Upload to S3
+        name: Clone Reporting Repo
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'main'
+          owner: 'RLI-Rdeaton'
+          repository: 'testingfeed'
+          access-token: ${{ secrets.INTERNAL_PAT }}
+      -
+        name: Access cloned repository content
         run: |
-          aws s3 cp ./grype-results.csv s3://grafana-flow-testing/
-
-
-
+          cp ./grype-results.csv ./testingfeed/grype-results.csv
+          ls ./testingfeed/
+          git config --global user.email ${{ secrets.GH_email }}
+          git config --global user.name ${{ secrets.GH_name }}
+          git add grype-results.csv
+          git commit -m "Update Grype results"
+      -
+        name: Push to Reporting Repo
+        run: |
+          cd testingfeed
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/RLI-Rdeaton/testingfeed.git
+          git push
 
 
   trivy:
