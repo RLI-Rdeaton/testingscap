@@ -530,11 +530,11 @@ jobs:
         run: |
           echo "Engine Version,Known Viruses,Scanned Directories,Scanned Files,Infected Files" > ${{ env.OUTPUT_NAME }}.csv
           {
-          cat clam.txt | grep "Engine version:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ",";
-          cat clam.txt | grep "Known viruses:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ",";
-          cat clam.txt | grep "Scanned directories:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ",";
-          cat clam.txt | grep "Scanned files:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ",";
-          cat clam.txt | grep "Infected files:" | sed "s/[[:blank:]]//g" | cut -d: -f2
+          cat ${{ env.OUTPUT_NAME }}.txt | grep "Engine version:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ","
+          cat ${{ env.OUTPUT_NAME }}.txt | grep "Known viruses:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ",";
+          cat ${{ env.OUTPUT_NAME }}.txt | grep "Scanned directories:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ",";
+          cat ${{ env.OUTPUT_NAME }}.txt | grep "Scanned files:" | sed "s/[[:blank:]]//g" | cut -d: -f2 | tr -d "\n\r"; echo -n ",";
+          cat ${{ env.OUTPUT_NAME }}.txt | grep "Infected files:" | sed "s/[[:blank:]]//g" | cut -d: -f2
           } >> ${{ env.OUTPUT_NAME }}.csv
       -
         name: Upload reports
