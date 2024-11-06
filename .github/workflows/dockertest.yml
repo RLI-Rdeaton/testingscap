@@ -494,6 +494,10 @@ jobs:
     env:
       EXPORT_NAME: "build.tar"
       DIR_NAME: "build"
+      TOOL: "clamav"
+      OUTPUT_NAME: "clamav-results"
+      REPORTING_REPO: ${{ secrets.GH_REPO }}
+      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Start ClamAV daemon
@@ -520,7 +524,7 @@ jobs:
       -
         name: Scan using ClamAV to ensure no malware in static images
         run: |
-          clamscan -ir  ${{ github.workspace }}/${{ env.DIR_NAME }} | tail -n 11 > results.txt
+          clamscan -ir  ${{ github.workspace }}/${{ env.DIR_NAME }} | tail -n 11 > ${{ env.OUTPUT_NAME }}.txt
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -528,4 +532,29 @@ jobs:
         with:
           name: clamd-results
           path: |
-            results.txt
+            ${{ env.OUTPUT_NAME }}.txt
+      -
+        name: Clone Reporting Repo
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'main'
+          owner: ${{ env.REPORTING_OWNER }}
+          repository: ${{ env.REPORTING_REPO }}
+          access-token: ${{ secrets.INTERNAL_PAT }}
+      -
+        name: Access cloned repository content
+        run: |
+          cp "./${{ env.OUTPUT_NAME }}.txt" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.txt"
+          cd ./${{ env.REPORTING_REPO }}
+          ls -latr
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git config --global user.name ${{ secrets.GH_NAME }}
+          git add "${{ env.OUTPUT_NAME }}.txt"
+          git commit -m "Update ${{ env.TOOL }} results"
+      -
+        name: Push to Reporting Repo
+        run: |
+          cd testingfeed
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git push
