@@ -132,6 +132,10 @@ jobs:
       MITRE_SAF_VERSION: "1.4.16"
       EXPORT_NAME: "build.tar"
       DIR_NAME: "build"
+      TOOL: "trufflehog"
+      OUTPUT_NAME: "trufflehog-results"
+      REPORTING_REPO: ${{ secrets.GH_REPO }}
+      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Install prerequisites
@@ -159,23 +163,19 @@ jobs:
       -
         name: Trufflehog scan
         run: |
-          trufflehog filesystem ${{ github.workspace }}/${{ env.DIR_NAME }} --no-update --only-verified --json --force-skip-archives | grep -wE "\{\"SourceMetadata\":" | jq --slurp . > trufflehog-results.json
-          ls -latr
-          cat trufflehog-results.json
+          trufflehog filesystem ${{ github.workspace }}/${{ env.DIR_NAME }} --no-update --only-verified --json --force-skip-archives | grep -wE "\{\"SourceMetadata\":" | jq --slurp . > ${{ env.OUTPUT_NAME }}.json
       -
        name: Make the Trufflehog JSON into an HDF file OR make a stub file
        run: |
          set -eu
          if grep -zoP '\[\]' trufflehog-results.json; then
-           echo THE GREP WORKS
-           echo YOU NEED TO FIGURE OUT WHAT YOU WANT TO PASS FOR CSV HERE
-           echo TREMENDOUS EFFORT
-            echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > trufflehog-results.csv
-            echo "trufflehog-results.hdf.json,Passed,Trufflehog/0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trufflehog because zero issues were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> trufflehog-results.csv
+           echo "NO RESULTS FOUND, CREATING STUB"
+           echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
+           echo "trufflehog-results.hdf.json,Passed,Trufflehog/0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trufflehog because zero issues were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
          else
-           echo CONVERTING FILE - THIS IS GOING TO FAIL UNTIL MITRE FIXES THINGS
-           saf convert trufflehog2hdf -i trufflehog-results.json -o trufflehog-results.hdf.json
-           saf convert hdf2csv -i trufflehog-results.hdf.json -o trufflehog-results.csv
+           echo "Converting found results to CSV"
+           saf convert trufflehog2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
+           saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
          fi
       -
         name: Upload reports
@@ -184,9 +184,34 @@ jobs:
         with:
           name: trufflehog-results
           path: |
-            trufflehog-results.json
-            trufflehog-results.hdf.json
-            trufflehog-results.csv
+            ${{ env.OUTPUT_NAME }}.json
+            ${{ env.OUTPUT_NAME }}.hdf.json
+            ${{ env.OUTPUT_NAME }}.csv
+      -
+        name: Clone Reporting Repo
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'main'
+          owner: ${{ env.REPORTING_OWNER }}
+          repository: ${{ env.REPORTING_REPO }}
+          access-token: ${{ secrets.INTERNAL_PAT }}
+      -
+        name: Access cloned repository content
+        run: |
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
+          cd ./${{ env.REPORTING_REPO }}
+          ls -latr
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git config --global user.name ${{ secrets.GH_NAME }}
+          git add "${{ env.OUTPUT_NAME }}.csv"
+          git commit -m "Update ${{ env.TOOL }} results"
+      -
+        name: Push to Reporting Repo
+        run: |
+          cd testingfeed
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git push
 
   grype:
     needs: build
@@ -361,7 +386,7 @@ jobs:
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       MITRE_SAF_VERSION: "1.4.16"
-      TOOL: "snyk2hdf"
+      TOOL: "snyk"
       OUTPUT_NAME: "snyk-results"
       REPORTING_REPO: ${{ secrets.GH_REPO }}
       REPORTING_OWNER: ${{ secrets.GH_ACCT }}
@@ -387,14 +412,12 @@ jobs:
         # 'redhat/ubi9:9.4'
         # ${{ env.IMAGE_NAME }}
         run: |
-          snyk container test redhat/ubi9:9.4 --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
+          snyk container test radiantone/fid:7.4.9 --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
       -
         name: Make the Snyk JSON file into an HDF file
         run: |
           set -eu
           saf convert snyk2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
-      # Converting HDF to CSV is currently busted,
-      # https://github.com/mitre/saf/issues/2925 for more info.
       -
         name: Make the HDF file into a CSV
         run: |
