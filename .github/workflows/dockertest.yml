@@ -316,7 +316,7 @@ jobs:
           else
             echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
             ls -latr
-            saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }} -o ${{ env.OUTPUT_NAME }}
+            saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}
             cp '${{ github.workspace }}/${{ env.OUTPUT_NAME }}/aquasecurity - aquasecurity.json' ${{ github.workspace }}/${{ env.OUTPUT_NAME }}.hdf.json
             saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
           fi
