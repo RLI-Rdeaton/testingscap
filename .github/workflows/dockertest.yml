@@ -34,41 +34,49 @@ jobs:
 
 
   scap:
-     needs: build
-     permissions:
+    needs: build
+    permissions:
        security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
        actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
-     runs-on: ubuntu-latest
-     container:
-       image: alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
-       env:
-         SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
-         MITRE_SAF_VERSION: "1.4.16"
-         WOLFI_STIG_VERSION: "0.1.2"
-         SSG_DIR: "ssg"
-     steps:
-       - name: Install prerequisites
-         run: |
-           set -eu
-           apk add curl docker jq openscap-docker npm gcompat unzip
-           npm install -g "@mitre/saf@${MITRE_SAF_VERSION}"
-           mkdir -p "${SSG_DIR}"
-           curl "https://github.com/ComplianceAsCode/content/releases/download/v${SCAP_SECURITY_GUIDE_VERSION}/scap-security-guide-${SCAP_SECURITY_GUIDE_VERSION}.zip" -Lso "${SSG_DIR}/ssg.zip"
-           curl "https://github.com/chainguard-dev/stigs/archive/refs/tags/v${WOLFI_STIG_VERSION}.zip" -Lso "${SSG_DIR}/wolfi.zip"
-           unzip "${SSG_DIR}/ssg.zip" -d "${SSG_DIR}"
-           unzip "${SSG_DIR}/wolfi.zip" -d "${SSG_DIR}"
-       - name: Login to Docker Hub
-         uses: docker/login-action@v3
-         with:
-           username: ${{ vars.DOCKERHUB_USERNAME }}
-           password: ${{ secrets.DOCKERHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
+      env:
+        SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
+        MITRE_SAF_VERSION: "1.4.16"
+        WOLFI_STIG_VERSION: "0.1.2"
+        SSG_DIR: "ssg"
+        TOOL: "openscap"
+        OUTPUT_NAME: "openscap-results"
+        REPORTING_REPO: ${{ secrets.GH_REPO }}
+        REPORTING_OWNER: ${{ secrets.GH_ACCT }}
+    steps:
+      -
+        name: Install prerequisites
+        run: |
+          set -eu
+          apk add curl docker jq openscap-docker npm gcompat unzip
+          npm install -g "@mitre/saf@${MITRE_SAF_VERSION}"
+          mkdir -p "${SSG_DIR}"
+          curl "https://github.com/ComplianceAsCode/content/releases/download/v${SCAP_SECURITY_GUIDE_VERSION}/scap-security-guide-${SCAP_SECURITY_GUIDE_VERSION}.zip" -Lso "${SSG_DIR}/ssg.zip"
+          curl "https://github.com/chainguard-dev/stigs/archive/refs/tags/v${WOLFI_STIG_VERSION}.zip" -Lso "${SSG_DIR}/wolfi.zip"
+          unzip "${SSG_DIR}/ssg.zip" -d "${SSG_DIR}"
+          unzip "${SSG_DIR}/wolfi.zip" -d "${SSG_DIR}"
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
         # oscap-docker requires the image to have been pulled
-       - name: Pull the docker image to scan
-         run: |
-           set -eu
-           docker pull "${IMAGE_NAME}"
-       - name: Run openscap
-         run: |
+      -
+        name: Pull the docker image to scan
+        run: |
+          set -eu
+          docker pull "${IMAGE_NAME}"
+      -
+        name: Run openscap
+        run: |
           set -eu
           container_id=$(docker create "${IMAGE_NAME}")
           if ! docker export "${container_id}" | tar -tvf - | grep -E '\setc/os-release( ->.*)?$' > /dev/null 2>&1 ; then
@@ -80,7 +88,7 @@ jobs:
           docker rm "$container_id"
           unset container_id
           set +e
-          oscap-docker image "${IMAGE_NAME}" xccdf eval --verbose ERROR --fetch-remote-resources --profile "xccdf_basic_profile_.check" --results "openscap-report.xml" --report "openscap-report.html" "${SSG_DIR}/stigs-${WOLFI_STIG_VERSION}/gpos/xml/scap/ssg/content/ssg-chainguard-gpos-ds.xml"
+          oscap-docker image "${IMAGE_NAME}" xccdf eval --verbose ERROR --fetch-remote-resources --profile "xccdf_basic_profile_.check" --results "${{ env.OUTPUT_NAME }}.xml" --report "${{ env.OUTPUT_NAME }}.html" "${SSG_DIR}/stigs-${WOLFI_STIG_VERSION}/gpos/xml/scap/ssg/content/ssg-chainguard-gpos-ds.xml"
           OSCAP_EXIT_CODE=$?
           set -e
           case "${OSCAP_EXIT_CODE}" in
@@ -99,31 +107,51 @@ jobs:
               exit "$OSCAP_EXIT_CODE"
             ;;
           esac
-
-       -
+      -
         name: Make the XCCDF into an HDF file
         run: |
           set -eu
-          saf convert xccdf_results2hdf -i openscap-report.xml -o openscap-report.hdf.json
-
-      # Converting HDF to CSV is currently busted,
-      # https://github.com/mitre/saf/issues/2925 for more info.
-       -
+          saf convert xccdf_results2hdf -i ${{ env.OUTPUT_NAME }}.xml -o ${{ env.OUTPUT_NAME }}.hdf.json
+      -
         name: Make the HDF file into a CSV
         run: |
           set -eu
-          saf convert hdf2csv -i openscap-report.hdf.json -o openscap-report.csv
-      # Converting Openscap to HDF to CSV is curtrently busted, see
-      # https://github.com/mitre/saf/issues/2925 for more info.
-       - name: Upload reports
-         if: success() || failure() # always run even if the previous step fails
-         uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
-         with:
-           name: openscap-reports
-           path: |
-             openscap-report.xml
-             openscap-report.hdf.json
-             openscap-report.csv
+          saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
+      -
+        name: Upload reports
+        if: success() || failure() # always run even if the previous step fails
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
+        with:
+          name: openscap-results
+          path: |
+            ${{ env.OUTPUT_NAME }}.xml
+            ${{ env.OUTPUT_NAME }}.hdf.json
+            ${{ env.OUTPUT_NAME }}.csv
+      -
+        name: Clone Reporting Repo
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'main'
+          owner: ${{ env.REPORTING_OWNER }}
+          repository: ${{ env.REPORTING_REPO }}
+          access-token: ${{ secrets.INTERNAL_PAT }}
+      -
+        name: Access cloned repository content
+        run: |
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
+          cd ./${{ env.REPORTING_REPO }}
+          ls -latr
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git config --global user.name ${{ secrets.GH_NAME }}
+          git add "${{ env.OUTPUT_NAME }}.csv"
+          git commit -m "Update ${{ env.TOOL }} results"
+      -
+        name: Push to Reporting Repo
+        run: |
+          cd ${{ env.REPORTING_REPO }}
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git push
 
   trufflehog:
     needs: build
