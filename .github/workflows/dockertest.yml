@@ -387,7 +387,7 @@ jobs:
         # 'redhat/ubi9:9.4'
         # ${{ env.IMAGE_NAME }}
         run: |
-          snyk container test redhat/ubi9:9.4 --app-vulns --nested-jars-depth=5 --json --json-file-output=snyk-output.json || true
+          snyk container test redhat/ubi9:9.4 --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
       -
         name: Make the Snyk JSON file into an HDF file
         run: |
