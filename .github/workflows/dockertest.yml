@@ -50,7 +50,7 @@ jobs:
         OUTPUT_NAME: "openscap-results"
         REPORTING_REPO: ${{ secrets.GH_REPO }}
         REPORTING_OWNER: ${{ secrets.GH_ACCT }}
-    steps:
+      steps:
       -
         name: Install prerequisites
         run: |
@@ -117,6 +117,7 @@ jobs:
         run: |
           set -eu
           saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
+          echo ${{ env.REPORTING_OWNER }}
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
