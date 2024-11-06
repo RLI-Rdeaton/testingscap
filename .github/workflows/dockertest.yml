@@ -193,6 +193,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MITRE_SAF_VERSION: "1.4.16"
+      TOOL: "grype"
       OUTPUT_NAME: "grype-results"
       REPORTING_REPO: ${{ secrets.GH_REPO }}
       REPORTING_OWNER: ${{ secrets.GH_ACCT }}
@@ -260,11 +261,11 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
-          git commit -m "Update Grype results"
+          git commit -m "Update ${{ env.TOOL }} results"
       -
         name: Push to Reporting Repo
         run: |
-          cd testingfeed
+          cd ${{ env.REPORTING_REPO }}
           git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
           git push
 
@@ -279,7 +280,10 @@ jobs:
       TRIVY_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
       TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
       MITRE_SAF_VERSION: "1.4.16"
+      TOOL: "trivy"
       OUTPUT_NAME: "trivy-results"
+      REPORTING_REPO: ${{ secrets.GH_REPO }}
+      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Install prerequisites
@@ -331,24 +335,24 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: 'RLI-Rdeaton'
-          repository: 'testingfeed'
+          owner: ${{ env.REPORTING_OWNER }}
+          repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
         name: Access cloned repository content
         run: |
-          cp "./${{ env.OUTPUT_NAME }}.csv" "./testingfeed/${{ env.OUTPUT_NAME }}.csv"
-          cd ./testingfeed
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
+          cd ./${{ env.REPORTING_REPO }}
           ls -latr
-          git config --global user.email ${{ secrets.GH_email }}
-          git config --global user.name ${{ secrets.GH_name }}
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
-          git commit -m "Update Trivy results"
+          git commit -m "Update ${{ env.TOOL }} results"
       -
         name: Push to Reporting Repo
         run: |
           cd testingfeed
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/RLI-Rdeaton/testingfeed.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
           git push
 
   snyk:
