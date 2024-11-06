@@ -361,6 +361,10 @@ jobs:
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       MITRE_SAF_VERSION: "1.4.16"
+      TOOL: "snyk2hdf"
+      OUTPUT_NAME: "snyk-results"
+      REPORTING_REPO: ${{ secrets.GH_REPO }}
+      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Install prerequisites
@@ -388,14 +392,14 @@ jobs:
         name: Make the Snyk JSON file into an HDF file
         run: |
           set -eu
-          saf convert snyk2hdf -i snyk-output.json -o snyk-output.hdf.json
+          saf convert snyk2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
       # Converting HDF to CSV is currently busted,
       # https://github.com/mitre/saf/issues/2925 for more info.
       -
         name: Make the HDF file into a CSV
         run: |
           set -eu
-          saf convert hdf2csv -i snyk-output.hdf.json -o snyk-output.csv
+          saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -403,9 +407,34 @@ jobs:
         with:
           name: snyk-results
           path: |
-            snyk-output.json
-            snyk-output.hdf.json
-            snyk-output.csv
+            ${{ env.OUTPUT_NAME }}.json
+            ${{ env.OUTPUT_NAME }}.hdf.json
+            ${{ env.OUTPUT_NAME }}.csv
+      -
+        name: Clone Reporting Repo
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'main'
+          owner: ${{ env.REPORTING_OWNER }}
+          repository: ${{ env.REPORTING_REPO }}
+          access-token: ${{ secrets.INTERNAL_PAT }}
+      -
+        name: Access cloned repository content
+        run: |
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
+          cd ./${{ env.REPORTING_REPO }}
+          ls -latr
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git config --global user.name ${{ secrets.GH_NAME }}
+          git add "${{ env.OUTPUT_NAME }}.csv"
+          git commit -m "Update ${{ env.TOOL }} results"
+      -
+        name: Push to Reporting Repo
+        run: |
+          cd testingfeed
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git push
 
   clam:
     needs: build
