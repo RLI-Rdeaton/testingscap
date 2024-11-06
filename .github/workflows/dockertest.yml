@@ -248,14 +248,14 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: ${{ secrets.GH_ACCT }}
-          repository: ${{ secrets.GH_REPO }}
+          owner: ${{ env.REPORTING_OWNER }}
+          repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
         name: Access cloned repository content
         run: |
-          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ secrets.GH_REPO }}/${{ env.OUTPUT_NAME }}.csv"
-          cd ./${{ secrets.GH_REPO }}
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
+          cd ./${{ env.REPORTING_REPO }}
           ls -latr
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
