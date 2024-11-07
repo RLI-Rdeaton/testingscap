@@ -518,7 +518,7 @@ jobs:
         run: |
           set -eu
           mkdir -p ${{ env.DIR_NAME }}
-          CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
+          CONT_ID=$(docker create modusmundi/eicartest:1.0.0)
           docker export ${CONT_ID} -o ${{ env.EXPORT_NAME }}
           tar --exclude='dev/null' --exclude='dev/random' --exclude='dev/urandom' --exclude='dev/zero' -xvf ${{ env.EXPORT_NAME }} -C ${{ github.workspace }}/${{ env.DIR_NAME }}
       -
