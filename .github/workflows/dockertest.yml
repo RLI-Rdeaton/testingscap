@@ -380,13 +380,13 @@ jobs:
         name: Scan image
         run: |
           n=0
-          until [ "$n" -ge 5 ]
+          until [ "$n" -ge 10 ]
           do
             trivy image ${{ env.IMAGE_NAME }} --format template --template '/usr/local/share/trivy/templates/asff.tpl' -o '${{ env.OUTPUT_NAME }}.json' && break
             n=$((n+1))
             sleep 15
           done
-          if [ "$n" -eq 5 ]; then
+          if [ "$n" -eq 10 ]; then
             echo "TRIVY FAILED"
           fi
 
@@ -404,6 +404,7 @@ jobs:
           else
             echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
             saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}
+            ls -latr
             cp '${{ github.workspace }}/${{ env.OUTPUT_NAME }}/aquasecurity - aquasecurity.json' ${{ github.workspace }}/${{ env.OUTPUT_NAME }}.hdf.json
             saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
           fi
