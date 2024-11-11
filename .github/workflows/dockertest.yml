@@ -68,7 +68,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ secrets.REPO_FQDN }}
-          username: ${{ vars.REPO_USERNAME }}
+          username: ${{ secrets.REPO_USERNAME }}
           password: ${{ secrets.REPO_TOKEN }}
         # oscap-docker requires the image to have been pulled
         # docker pull "${IMAGE_NAME}"
