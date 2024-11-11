@@ -379,8 +379,16 @@ jobs:
       -
         name: Scan image
         run: |
-          sudo find / -iname 'asff.tpl'
-          trivy image ${{ env.IMAGE_NAME }} --format template --template '/usr/local/share/trivy/templates/asff.tpl' -o '${{ env.OUTPUT_NAME }}.json'
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            trivy image ${{ env.IMAGE_NAME }} --format template --template '/usr/local/share/trivy/templates/asff.tpl' -o '${{ env.OUTPUT_NAME }}.json' && break
+            n=$((n+1))
+            sleep 15
+          done
+          if [ "$n" -eq 5 ]; then
+            echo "TRIVY FAILED"
+          fi
 
       # OKAY SO WE NEED TO TEST FOR WHEN WE HAVE ZERO RESULTS IN THE TRIVY FILE BECAUSE THAT IS A THING THAT HAPPENS.
       # Because the response for zero results is extremely well defined, this means we can use if/else logic to determine our path forward.
