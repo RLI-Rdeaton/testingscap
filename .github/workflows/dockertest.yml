@@ -345,22 +345,41 @@ jobs:
       REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
+        name: Set up apt repo for prerequisites
+        run: |
+          set -eu
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+      -
         name: Install prerequisites
         run: |
           set -eu
-          sudo apt-get install -y npm
+          sudo apt-get update
+          sudo apt-get install -y npm trivy
           npm install -g "@mitre/saf@${MITRE_SAF_VERSION}"
       -
-        name: Scan image
-        uses: aquasecurity/trivy-action@0.24.0
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
+          registry: ${{ secrets.REPO_FQDN }}
+          username: ${{ secrets.REPO_USERNAME }}
+          password: ${{ secrets.REPO_TOKEN }}
+#      -
+#        name: Scan image
+#        uses: aquasecurity/trivy-action@0.24.0
+#        with:
           #image-ref: ${{ env.IMAGE_NAME }}
           # image-ref: 'redhat/ubi9:9.4'
           #image-ref: radiantone/fid:7.4.9
-          image-ref: ${{ env.IMAGE_NAME }}
-          template: '@/contrib/asff.tpl'
-          format: 'template'
-          output: '${{ env.OUTPUT_NAME }}.json'
+#          image-ref: ${{ env.IMAGE_NAME }}
+#          template: '@/contrib/asff.tpl'
+#          format: 'template'
+#          output: '${{ env.OUTPUT_NAME }}.json'
+      -
+        name: Scan image
+        run: |
+          trivy image ${{ env.IMAGE_NAME }} --format template --template '@/contrib/asff.tpl' -o '${{ env.OUTPUT_NAME }}.json'
 
       # OKAY SO WE NEED TO TEST FOR WHEN WE HAVE ZERO RESULTS IN THE TRIVY FILE BECAUSE THAT IS A THING THAT HAPPENS.
       # Because the response for zero results is extremely well defined, this means we can use if/else logic to determine our path forward.
