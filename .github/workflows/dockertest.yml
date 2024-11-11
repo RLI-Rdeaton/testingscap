@@ -379,6 +379,7 @@ jobs:
       -
         name: Scan image
         run: |
+          sudo find / -iname 'asff.tpl'
           trivy image ${{ env.IMAGE_NAME }} --format template --template '@/contrib/asff.tpl' -o '${{ env.OUTPUT_NAME }}.json'
 
       # OKAY SO WE NEED TO TEST FOR WHEN WE HAVE ZERO RESULTS IN THE TRIVY FILE BECAUSE THAT IS A THING THAT HAPPENS.
