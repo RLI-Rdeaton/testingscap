@@ -1,8 +1,8 @@
 name: daily-build-and-scan
 
 on:
-  release:
-    types: [published]
+  schedule:
+    - cron: "*/10 * * * *"
 
 env:
   REGISTRY: docker.io
