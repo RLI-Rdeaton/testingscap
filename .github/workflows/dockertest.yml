@@ -346,7 +346,6 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
           git push
 
-
   trivy:
     needs: build
     permissions:
@@ -505,11 +504,13 @@ jobs:
         run: |
           set -eu
           saf convert snyk2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
+          ls -latr
       -
         name: Make the HDF file into a CSV
         run: |
           set -eu
           saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
+          ls -latr
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
