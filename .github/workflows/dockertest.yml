@@ -6,11 +6,11 @@ on:
 
 env:
   REGISTRY: docker.io
-  #IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+  IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
-  IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
+  #IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
 
 jobs:
   build:
@@ -67,9 +67,15 @@ jobs:
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.REPO_FQDN }}
-          username: ${{ secrets.REPO_USERNAME }}
-          password: ${{ secrets.REPO_TOKEN }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#      -
+#        name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ${{ secrets.REPO_FQDN }}
+#          username: ${{ secrets.REPO_USERNAME }}
+#          password: ${{ secrets.REPO_TOKEN }}
         # oscap-docker requires the image to have been pulled
         # docker pull "${IMAGE_NAME}"
       -
@@ -180,9 +186,15 @@ jobs:
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.REPO_FQDN }}
-          username: ${{ secrets.REPO_USERNAME }}
-          password: ${{ secrets.REPO_TOKEN }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#      -
+#        name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ${{ secrets.REPO_FQDN }}
+#          username: ${{ secrets.REPO_USERNAME }}
+#          password: ${{ secrets.REPO_TOKEN }}
       #CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
       #CONT_ID=$(docker create node:8.11)
       -
@@ -263,13 +275,13 @@ jobs:
           sudo curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
           sudo apt-get install -y npm
           npm install -g "@mitre/saf@${MITRE_SAF_VERSION}"
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ secrets.REPO_FQDN }}
-          username: ${{ secrets.REPO_USERNAME }}
-          password: ${{ secrets.REPO_TOKEN }}
+#      -
+#        name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ${{ secrets.REPO_FQDN }}
+#          username: ${{ secrets.REPO_USERNAME }}
+#          password: ${{ secrets.REPO_TOKEN }}
       # grype chainguard/wolfi-base -o json --file grype-results.json
       # grype ${{ env.IMAGE_NAME }} -o json --file grype-results.json
       -
@@ -362,20 +374,18 @@ jobs:
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.REPO_FQDN }}
-          username: ${{ secrets.REPO_USERNAME }}
-          password: ${{ secrets.REPO_TOKEN }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 #      -
-#        name: Scan image
-#        uses: aquasecurity/trivy-action@0.24.0
+#        name: Login to Docker Hub
+#        uses: docker/login-action@v3
 #        with:
-          #image-ref: ${{ env.IMAGE_NAME }}
-          # image-ref: 'redhat/ubi9:9.4'
-          #image-ref: radiantone/fid:7.4.9
-#          image-ref: ${{ env.IMAGE_NAME }}
-#          template: '@/contrib/asff.tpl'
-#          format: 'template'
-#          output: '${{ env.OUTPUT_NAME }}.json'
+#          registry: ${{ secrets.REPO_FQDN }}
+#          username: ${{ secrets.REPO_USERNAME }}
+#          password: ${{ secrets.REPO_TOKEN }}
+      #image-ref: ${{ env.IMAGE_NAME }}
+      # image-ref: 'redhat/ubi9:9.4'
+      #image-ref: radiantone/fid:7.4.9
       -
         name: Scan image
         run: |
@@ -468,9 +478,15 @@ jobs:
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.REPO_FQDN }}
-          username: ${{ secrets.REPO_USERNAME }}
-          password: ${{ secrets.REPO_TOKEN }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#      -
+#        name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ${{ secrets.REPO_FQDN }}
+#          username: ${{ secrets.REPO_USERNAME }}
+#          password: ${{ secrets.REPO_TOKEN }}
       -
         name: Scan using Snyk
         continue-on-error: true
@@ -541,19 +557,19 @@ jobs:
         with:
           db_main: 'true'
           db_daily: 'true'
-#      -
-#        name: Login to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          username: ${{ vars.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.REPO_FQDN }}
-          username: ${{ secrets.REPO_USERNAME }}
-          password: ${{ secrets.REPO_TOKEN }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#      -
+#        name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ${{ secrets.REPO_FQDN }}
+#          username: ${{ secrets.REPO_USERNAME }}
+#          password: ${{ secrets.REPO_TOKEN }}
       # CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
       # CONT_ID=$(docker create modusmundi/eicartest:1.0.0)
       -
