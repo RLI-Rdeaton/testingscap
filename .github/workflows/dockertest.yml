@@ -502,7 +502,7 @@ jobs:
         run: |
           set -eu
           ls -latr
-          if grep -zoP '"vulnerabilities": [],' ${{ env.OUTPUT_NAME }}.json; then
+          if grep -zoP '"vulnerabilities": \[\],' ${{ env.OUTPUT_NAME }}.json; then
             echo "NO FINDINGS, CREATING STUB"
             echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
             echo "snyk-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from snyk because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
