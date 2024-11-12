@@ -1,15 +1,13 @@
-name: ci
+name: daily-build-and-scan
 
 on:
-  release:
-    types: [published]
+  schedule:
+  - cron: "*/10 * * * *"
 
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  CURRENT_VERSION_TAG: "7.4.12"
   #IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
 
 jobs:
@@ -30,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}, ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ vars.CURRENT_VERSION_TAG }}, ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
 
