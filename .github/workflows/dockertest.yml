@@ -296,16 +296,19 @@ jobs:
           set -eu
           grype ${{ env.IMAGE_NAME }} -o json  --file "${{ env.OUTPUT_NAME }}.json"
       -
-        name: Make the Grype JSON into an HDF file
+        name: Check for results and make a stub if no vulnerabilities, otherwise process and make CSV.
         run: |
+          set -eu
           ls -latr
-          set -eu
-          saf convert anchoregrype2hdf -i "${{ env.OUTPUT_NAME }}.json" -o "${{ env.OUTPUT_NAME }}.hdf.json"
-      -
-        name: Make the HDF file into a CSV
-        run: |
-          set -eu
-          saf convert hdf2csv -i "${{ env.OUTPUT_NAME }}.hdf.json" -o "${{ env.OUTPUT_NAME }}.csv"
+          if grep -zoP '"matches": \[\],' ${{ env.OUTPUT_NAME }}.json; then
+            echo "NO FINDINGS, CREATING STUB"
+            echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
+            echo "grype-results.hdf.json,Passed,Grype/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from grype because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
+          else
+            echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
+            saf convert anchoregrype2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
+            saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
+          fi
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -505,7 +508,7 @@ jobs:
           if grep -zoP '"vulnerabilities": \[\],' ${{ env.OUTPUT_NAME }}.json; then
             echo "NO FINDINGS, CREATING STUB"
             echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
-            echo "snyk-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from snyk because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
+            echo "snyk-results.hdf.json,Passed,Snyk/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from snyk because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
           else
             echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
             saf convert snyk2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
