@@ -411,15 +411,13 @@ jobs:
       - name: Test results and either create a stub file or convert them.
         run: |
           set -eu
-          ls -latr
-          if grep -zoP '...."Findings": \[\n*....\]\n' trivy-results.json; then
+          if grep -zoP '...."Findings": \[\n*....\]\n' ${{ env.OUTPUT_NAME }}; then
             echo "NO FINDINGS, CREATING STUB"
             echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
             echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
           else
             echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
             saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}
-            ls -latr
             cp '${{ github.workspace }}/${{ env.OUTPUT_NAME }}/aquasecurity - aquasecurity.json' ${{ github.workspace }}/${{ env.OUTPUT_NAME }}.hdf.json
             saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
           fi
@@ -500,17 +498,19 @@ jobs:
         run: |
           snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
       -
-        name: Make the Snyk JSON file into an HDF file
+        name: Check for results and make a stub if no vulnerabilities, otherwise process and make CSV.
         run: |
           set -eu
-          saf convert snyk2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
           ls -latr
-      -
-        name: Make the HDF file into a CSV
-        run: |
-          set -eu
-          saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
-          ls -latr
+          if grep -zoP '"vulnerabilities": [],' ${{ env.OUTPUT_NAME }}.json; then
+            echo "NO FINDINGS, CREATING STUB"
+            echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
+            echo "snyk-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from snyk because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
+          else
+            echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
+            saf convert snyk2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}.hdf.json
+            saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
+          fi
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
