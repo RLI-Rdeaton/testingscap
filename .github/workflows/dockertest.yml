@@ -415,6 +415,7 @@ jobs:
         with:
           name: trivy-results
           path: |
+            ${{ env.OUTPUT_NAME }}.json
             ${{ env.OUTPUT_NAME }}.hdf.json
             ${{ env.OUTPUT_NAME }}.csv
       -
