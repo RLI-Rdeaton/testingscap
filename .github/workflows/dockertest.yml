@@ -295,7 +295,7 @@ jobs:
         name: Grype scan
         run: |
           set -eu
-          grype redhat/ubi9:9.4 -o json --file "${{ env.OUTPUT_NAME }}.json"
+          grype ${{ env.IMAGE_NAME }} -o json  --file ${{ env.OUTPUT_NAME }}.json
       -
         name: Check for results and make a stub if no vulnerabilities, otherwise process and make CSV.
         run: |
