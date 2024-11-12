@@ -38,6 +38,8 @@ RUN addgroup --gid 1000 radiant && adduser -H -D -u 1000 -G radiant radiant
 
 RUN chmod -R g=u /opt/radiantone
 
+RUN rm -f /opt/radiantone/migration-tool.zip
+
 USER radiant
 
 
