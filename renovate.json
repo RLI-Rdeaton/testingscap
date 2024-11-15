@@ -46,8 +46,7 @@
             "matchUpdateTypes": [
                 "minor",
                 "patch"
-            ],
-            "versioning": "loose"
+            ]
         }
     ]
 }
