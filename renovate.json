@@ -3,6 +3,10 @@
     "extends": [
         "config:recommended"
     ],
+    "enabledManagers": [
+        "dockerfile",
+        "github-actions"
+    ],
     "packageRules": [
         {
             "matchDatasources": [
@@ -16,13 +20,3 @@
         }
     ]
 }
-
-
-
-"packageRules": [
-  {
-    "matchDatasources": ["docker"],
-    "matchPackageNames": ["whitesource/renovate"],
-    "versioning": "semver"
-  }
-]
