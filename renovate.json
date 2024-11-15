@@ -3,19 +3,26 @@
     "extends": [
         "config:recommended"
     ],
-    "enabledManagers": [
-        "docker"
-    ],
     "packageRules": [
         {
             "matchDatasources": [
                 "docker"
             ],
             "matchPackageNames": [
-                "foo/bar"
+                "radiantone/fid"
             ],
             "allowedVersions": "<=7.4",
             "versioning": "semver"
         }
     ]
 }
+
+
+
+"packageRules": [
+  {
+    "matchDatasources": ["docker"],
+    "matchPackageNames": ["whitesource/renovate"],
+    "versioning": "semver"
+  }
+]
