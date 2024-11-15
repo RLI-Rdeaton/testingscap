@@ -39,11 +39,17 @@ jobs:
        actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     container:
-      image: alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
+      image: alpine:3.20.3@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e017a4b4a
     env:
+<<<<<<< HEAD
       SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
       MITRE_SAF_VERSION: "1.4.16"
       WOLFI_STIG_VERSION: "0.1.0"
+=======
+      SCAP_SECURITY_GUIDE_VERSION: "0.1.75"
+      MITRE_SAF_VERSION: "1.4.11"
+      WOLFI_STIG_VERSION: "0.1.2"
+>>>>>>> 980263a0be1020e265d5c75f002cd61457e5b247
       SSG_DIR: "ssg"
       TOOL: "openscap"
       OUTPUT_NAME: "openscap-results"
@@ -324,7 +330,7 @@ jobs:
       #    aws s3 cp ./grype-results.csv s3://grafana-flow-testing/
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.2
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
         with:
           depth: 1
           branch: 'main'
