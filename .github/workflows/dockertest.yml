@@ -324,7 +324,7 @@ jobs:
       #    aws s3 cp ./grype-results.csv s3://grafana-flow-testing/
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.2
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
         with:
           depth: 1
           branch: 'main'
