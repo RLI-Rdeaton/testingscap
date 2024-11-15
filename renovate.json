@@ -15,8 +15,9 @@
             "matchPackageNames": [
                 "radiantone/fid"
             ],
+            "matchUpdateTypes": ["major", "minor"],
             "allowedVersions": "<=7.4",
-            "versioning": "semver"
+            "versioning": "loose"
         }
     ]
 }
