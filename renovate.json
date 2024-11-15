@@ -3,9 +3,37 @@
     "extends": [
         "config:recommended"
     ],
-    "enabledManagers": [
-        "dockerfile",
-        "github-actions"
+    "regexManagers": [
+        {
+            "fileMatch": [
+                "\\.yml$"
+            ],
+            "matchStrings": [
+                "SCAP_SECURITY_GUIDE_VERSION *: *\"(?<currentValue>.+?)\""
+            ],
+            "depNameTemplate": "ComplianceAsCode/content",
+            "datasourceTemplate": "github-releases"
+        },
+        {
+            "fileMatch": [
+                "\\.yml$"
+            ],
+            "matchStrings": [
+                "MITRE_SAF_VERSION *: *\"(?<currentValue>.+?)\""
+            ],
+            "depNameTemplate": "@mitre/saf",
+            "datasourceTemplate": "npm"
+        },
+        {
+            "fileMatch": [
+                "\\.yml$"
+            ],
+            "matchStrings": [
+                "WOLFI_STIG_VERSION *: *\"(?<currentValue>.+?)\""
+            ],
+            "depNameTemplate": "chainguard-dev/stigs",
+            "datasourceTemplate": "github-releases"
+        },
     ],
     "packageRules": [
         {
