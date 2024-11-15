@@ -33,7 +33,7 @@
             ],
             "depNameTemplate": "chainguard-dev/stigs",
             "datasourceTemplate": "github-releases"
-        },
+        }
     ],
     "packageRules": [
         {
