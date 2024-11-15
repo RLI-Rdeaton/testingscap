@@ -4,6 +4,8 @@
         "config:recommended",
         "docker:enableMajor"
     ],
+    "prConcurrentLimit": 10,
+    "prHourlyLimit": 10,
     "regexManagers": [
         {
             "fileMatch": [
