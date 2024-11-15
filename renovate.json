@@ -1,7 +1,8 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:recommended"
+        "config:recommended",
+        "docker:enableMajor"
     ],
     "regexManagers": [
         {
@@ -33,19 +34,6 @@
             ],
             "depNameTemplate": "chainguard-dev/stigs",
             "datasourceTemplate": "github-releases"
-        }
-    ],
-    "packageRules": [
-        {
-            "matchDatasources": [
-                "docker"
-            ],
-            "matchPackageNames": [
-                "radiantone/fid"
-            ],
-            "matchUpdateTypes": [
-                "patch"
-            ]
         }
     ]
 }
