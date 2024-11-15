@@ -43,7 +43,7 @@ jobs:
     env:
       SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
       MITRE_SAF_VERSION: "1.4.11"
-      WOLFI_STIG_VERSION: "0.1.0"
+      WOLFI_STIG_VERSION: "0.1.2"
       SSG_DIR: "ssg"
       TOOL: "openscap"
       OUTPUT_NAME: "openscap-results"
