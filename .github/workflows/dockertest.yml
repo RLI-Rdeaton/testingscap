@@ -8,6 +8,7 @@ env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
   CURRENT_VERSION_TAG: "7.4.12"
+  MITRE_SAF_VERSION: "1.4.11"
   #IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
 
 jobs:
@@ -41,15 +42,8 @@ jobs:
     container:
       image: alpine:3.20.3@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e017a4b4a
     env:
-<<<<<<< HEAD
-      SCAP_SECURITY_GUIDE_VERSION: "0.1.69"
-      MITRE_SAF_VERSION: "1.4.16"
-      WOLFI_STIG_VERSION: "0.1.0"
-=======
       SCAP_SECURITY_GUIDE_VERSION: "0.1.75"
-      MITRE_SAF_VERSION: "1.4.11"
       WOLFI_STIG_VERSION: "0.1.2"
->>>>>>> 980263a0be1020e265d5c75f002cd61457e5b247
       SSG_DIR: "ssg"
       TOOL: "openscap"
       OUTPUT_NAME: "openscap-results"
@@ -171,7 +165,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      MITRE_SAF_VERSION: "1.4.16"
+      #MITRE_SAF_VERSION: "1.4.16"
       EXPORT_NAME: "build.tar"
       DIR_NAME: "build"
       TOOL: "trufflehog"
@@ -266,7 +260,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      MITRE_SAF_VERSION: "1.4.16"
+      #MITRE_SAF_VERSION: "1.4.16"
       TOOL: "grype"
       OUTPUT_NAME: "grype-results"
       REPORTING_REPO: ${{ secrets.GH_REPO }}
@@ -363,7 +357,7 @@ jobs:
     env:
       TRIVY_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
       TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-      MITRE_SAF_VERSION: "1.4.16"
+      #MITRE_SAF_VERSION: "1.4.16"
       TOOL: "trivy"
       OUTPUT_NAME: "trivy-results"
       REPORTING_REPO: ${{ secrets.GH_REPO }}
@@ -470,7 +464,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      MITRE_SAF_VERSION: "1.4.16"
+      #MITRE_SAF_VERSION: "1.4.16"
       TOOL: "snyk"
       OUTPUT_NAME: "snyk-results"
       REPORTING_REPO: ${{ secrets.GH_REPO }}
