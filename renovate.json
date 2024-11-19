@@ -6,8 +6,9 @@
     ],
     "prConcurrentLimit": 10,
     "prHourlyLimit": 10,
-    "regexManagers": [
+    "customManagers": [
         {
+            "customType": "regex",
             "fileMatch": [
                 "\\.yml$"
             ],
@@ -18,6 +19,7 @@
             "datasourceTemplate": "github-releases"
         },
         {
+            "customType": "regex",
             "fileMatch": [
                 "\\.yml$"
             ],
@@ -28,6 +30,7 @@
             "datasourceTemplate": "npm"
         },
         {
+            "customType": "regex",
             "fileMatch": [
                 "\\.yml$"
             ],
