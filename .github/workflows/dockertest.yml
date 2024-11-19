@@ -8,7 +8,9 @@ env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
   CURRENT_VERSION_TAG: "7.4.12"
-  MITRE_SAF_VERSION: "1.4.11"
+  MITRE_SAF_VERSION: "1.4.16"
+  REPORTING_REPO: ${{ secrets.GH_REPO }}
+  REPORTING_OWNER: ${{ secrets.GH_ACCT }}
   #IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
 
 jobs:
@@ -47,8 +49,6 @@ jobs:
       SSG_DIR: "ssg"
       TOOL: "openscap"
       OUTPUT_NAME: "openscap-results"
-      REPORTING_REPO: ${{ secrets.GH_REPO }}
-      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Install prerequisites
@@ -165,13 +165,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      #MITRE_SAF_VERSION: "1.4.16"
       EXPORT_NAME: "build.tar"
       DIR_NAME: "build"
       TOOL: "trufflehog"
       OUTPUT_NAME: "trufflehog-results"
-      REPORTING_REPO: ${{ secrets.GH_REPO }}
-      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Install prerequisites
@@ -260,11 +257,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      #MITRE_SAF_VERSION: "1.4.16"
       TOOL: "grype"
       OUTPUT_NAME: "grype-results"
-      REPORTING_REPO: ${{ secrets.GH_REPO }}
-      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Install prerequisites
@@ -355,13 +349,8 @@ jobs:
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     env:
-      TRIVY_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
-      TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-      #MITRE_SAF_VERSION: "1.4.16"
       TOOL: "trivy"
       OUTPUT_NAME: "trivy-results"
-      REPORTING_REPO: ${{ secrets.GH_REPO }}
-      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Set up apt repo for prerequisites
@@ -464,11 +453,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      #MITRE_SAF_VERSION: "1.4.16"
       TOOL: "snyk"
       OUTPUT_NAME: "snyk-results"
-      REPORTING_REPO: ${{ secrets.GH_REPO }}
-      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Install prerequisites
@@ -498,7 +484,7 @@ jobs:
         # 'redhat/ubi9:9.4'
         # ${{ env.IMAGE_NAME }}
         run: |
-          snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
+          snyk container test 'redhat/ubi9:9.4' --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
       -
         name: Check for results and make a stub if no vulnerabilities, otherwise process and make CSV.
         run: |
@@ -557,8 +543,6 @@ jobs:
       DIR_NAME: "build"
       TOOL: "clamav"
       OUTPUT_NAME: "clamav-results"
-      REPORTING_REPO: ${{ secrets.GH_REPO }}
-      REPORTING_OWNER: ${{ secrets.GH_ACCT }}
     steps:
       -
         name: Start ClamAV daemon
