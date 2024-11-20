@@ -402,7 +402,8 @@ jobs:
       - name: Test results and either create a stub file or convert them.
         run: |
           set -eu
-          if grep -zoP '...."Findings": \[\n*....\]\n' ${{ env.OUTPUT_NAME }}; then
+          cat ${{ env.OUTPUT_NAME }}.json
+          if grep -zoP '...."Findings": \[\n*....\]\n' ${{ env.OUTPUT_NAME }}.json; then
             echo "NO FINDINGS, CREATING STUB"
             echo 'Results Set,Status,ID,Title,Description,Descriptions,Impact,Severity,Code,Check,Fix,800-53 Controls,CCI IDs,Results,Waived,Waiver Data' > ${{ env.OUTPUT_NAME }}.csv
             echo "trivy-results.hdf.json,Passed,Trivy/CVE-0000-0000,No findings at this time,This is a stub file generated due to a lack of results from trivy because zero CVEs were found.,,0,N/A,,,\"No fixes needed, good work.\",,,,FALSE," >> ${{ env.OUTPUT_NAME }}.csv
