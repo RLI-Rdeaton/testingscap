@@ -330,13 +330,13 @@ jobs:
       -
         name: Access cloned repository content
         run: |
-          ls -latr ./${{ env.REPORTING_REPO }}/${{ github.workspace }}/
-          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ github.workspace }}/${{ env.OUTPUT_NAME }}.csv"
-          cd ./${{ env.REPORTING_REPO }}
+          ls -latr ./${{ env.REPORTING_REPO }}/${{ github.event.repository.name }}/
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ github.event.repository.name }}/${{ env.OUTPUT_NAME }}.csv"
+          cd ./${{ env.REPORTING_REPO }}/${{ github.event.repository.name }}
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
-          git commit -m "Update ${{ env.TOOL }} results"
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
       -
         name: Push to Reporting Repo
         run: |
