@@ -393,7 +393,7 @@ jobs:
           n=0
           until [ "$n" -ge 10 ]
           do
-            trivy image radiantone/fid:7.4.9 --format template --template '@/usr/local/share/trivy/templates/asff.tpl' -o '${{ env.OUTPUT_NAME }}.json' && break
+            trivy image ${{ env.IMAGE_NAME }} --format template --template '@/usr/local/share/trivy/templates/asff.tpl' -o '${{ env.OUTPUT_NAME }}.json' && break
             n=$((n+1))
             sleep 15
           done
