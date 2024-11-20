@@ -330,6 +330,7 @@ jobs:
       -
         name: Access cloned repository content
         run: |
+          ls -latr
           cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ github.workspace }}/${{ env.OUTPUT_NAME }}.csv"
           cd ./${{ env.REPORTING_REPO }}
           ls -latr
