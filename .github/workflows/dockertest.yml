@@ -1,9 +1,14 @@
 name: daily-build-and-scan
 
-on:
-  schedule:
+#on:
+#  schedule:
     #- cron: "0 0 * * *"
-     - cron: "*/10 * * * *"
+    #- cron: "*/10 * * * *"
+
+on:
+  release:
+    types: [published]
+
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
