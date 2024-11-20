@@ -152,12 +152,10 @@ jobs:
       -
         name: Access cloned repository content
         run: |
-          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
-          cd ./${{ env.REPORTING_REPO }}
-          ls -latr
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ github.workspace }}/${{ env.OUTPUT_NAME }}.csv"
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
-          git add "${{ env.OUTPUT_NAME }}.csv"
+          git add "${{ github.workspace }}/${{ env.OUTPUT_NAME }}.csv"
           git commit -m "Update ${{ env.TOOL }} results"
       -
         name: Push to Reporting Repo
@@ -246,7 +244,6 @@ jobs:
         run: |
           cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
           cd ./${{ env.REPORTING_REPO }}
-          ls -latr
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
@@ -333,7 +330,7 @@ jobs:
       -
         name: Access cloned repository content
         run: |
-          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ env.OUTPUT_NAME }}.csv"
+          cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ github.workspace }}/${{ env.OUTPUT_NAME }}.csv"
           cd ./${{ env.REPORTING_REPO }}
           ls -latr
           git config --global user.email ${{ secrets.GH_EMAIL }}
