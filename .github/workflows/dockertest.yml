@@ -13,7 +13,7 @@ env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
   CURRENT_VERSION_TAG: "7.4.8"
-  MITRE_SAF_VERSION: "1.4.16"
+  MITRE_SAF_VERSION: "1.4.11"
   REPORTING_REPO: ${{ secrets.GH_REPO }}
   REPORTING_OWNER: ${{ secrets.GH_ACCT }}
   #IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
