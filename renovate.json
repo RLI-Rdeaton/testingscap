@@ -39,6 +39,17 @@
             ],
             "depNameTemplate": "chainguard-dev/stigs",
             "datasourceTemplate": "github-releases"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "\\.yml$"
+            ],
+            "matchStrings": [
+                "CURRENT_VERSION_TAG *: *\"(?<currentValue>.+?)\""
+            ],
+            "depNameTemplate": "radiantone/fid",
+            "datasourceTemplate": "docker"
         }
     ]
 }
