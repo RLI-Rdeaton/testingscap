@@ -333,7 +333,7 @@ jobs:
           ls -latr
           cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ env.REPORTING_REPO }}/${{ github.workspace }}/${{ env.OUTPUT_NAME }}.csv"
           cd ./${{ env.REPORTING_REPO }}
-          ls -latr
+          ls -latr ./${{ env.REPORTING_REPO }}/${{ github.workspace }}/
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
