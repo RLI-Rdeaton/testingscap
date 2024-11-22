@@ -1,13 +1,13 @@
 name: daily-build-and-scan
 
-on:
-  schedule:
-    - cron: "0 0 * * *"
+#on:
+#  schedule:
+#    - cron: "0 0 * * *"
     #- cron: "*/10 * * * *"
 
-#on:
-#  release:
-#    types: [published]
+on:
+  release:
+    types: [published]
 
 env:
   REGISTRY: docker.io
@@ -162,7 +162,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
           git push
 
   trufflehog:
@@ -253,7 +253,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
           git push
 
   grype:
@@ -337,7 +337,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
           git push
 
   trivy:
@@ -446,7 +446,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
           git push
 
   snyk:
@@ -532,7 +532,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
           git push
 
   clam:
@@ -619,5 +619,5 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ secrets.GH_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
           git push
