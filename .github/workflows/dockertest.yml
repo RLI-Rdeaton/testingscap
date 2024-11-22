@@ -10,13 +10,10 @@ on:
     types: [published]
 
 env:
-  REGISTRY: docker.io
-  IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
   CURRENT_VERSION_TAG: "7.4.8"
+  #github.event.repository.name is a special environment variable that gives us the repo name.  There isn't great documentation on it.
+  IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
   MITRE_SAF_VERSION: "1.4.16"
-  #REPORTING_REPO: ${{ secrets.GH_REPO }}
-  #REPORTING_OWNER: ${{ secrets.GH_ACCT }}
-  #IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
 
 jobs:
   build:
@@ -42,9 +39,6 @@ jobs:
 
   scap:
     needs: build
-    permissions:
-       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     container:
       image: alpine:3.20.3@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e017a4b4a
@@ -60,8 +54,8 @@ jobs:
         run: |
           set -eu
           apk add curl docker jq openscap-docker npm gcompat unzip git
-          npm install -g "@mitre/saf@${MITRE_SAF_VERSION}"
-          mkdir -p "${SSG_DIR}"
+          npm install -g "@mitre/saf@${{ env.MITRE_SAF_VERSION}}"
+          mkdir -p "${{ env.SSG_DIR}}"
           curl "https://github.com/ComplianceAsCode/content/releases/download/v${SCAP_SECURITY_GUIDE_VERSION}/scap-security-guide-${SCAP_SECURITY_GUIDE_VERSION}.zip" -Lso "${SSG_DIR}/ssg.zip"
           curl "https://github.com/chainguard-dev/stigs/archive/refs/tags/v${WOLFI_STIG_VERSION}.zip" -Lso "${SSG_DIR}/wolfi.zip"
           unzip "${SSG_DIR}/ssg.zip" -d "${SSG_DIR}"
@@ -484,7 +478,7 @@ jobs:
         # 'redhat/ubi9:9.4'
         # ${{ env.IMAGE_NAME }}
         run: |
-          snyk container test 'redhat/ubi9:9.4' --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
+          snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
       -
         name: Check for results and make a stub if no vulnerabilities, otherwise process and make CSV.
         run: |
