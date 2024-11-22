@@ -15,7 +15,7 @@ env:
   CURRENT_VERSION_TAG: "7.4.8"
   MITRE_SAF_VERSION: "1.4.16"
   REPORTING_REPO: ${{ secrets.GH_REPO }}
-  REPORTING_OWNER: ${{ secrets.GH_ACCT }}
+  #REPORTING_OWNER: ${{ secrets.GH_ACCT }}
   #IMAGE_NAME: ${{ secrets.REPO_PATH }}/fid:7.4.12-hotfix.2
 
 jobs:
@@ -129,7 +129,6 @@ jobs:
         run: |
           set -eu
           saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
-          echo ${{ env.REPORTING_OWNER }}
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
@@ -146,7 +145,7 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: ${{ env.REPORTING_OWNER }}
+          owner: ${{ secrets.GH_ACCT }}
           repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
@@ -162,7 +161,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ env.REPORTING_REPO }}.git
           git push
 
   trufflehog:
@@ -237,7 +236,7 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: ${{ env.REPORTING_OWNER }}
+          owner: ${{ secrets.GH_ACCT }}
           repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
@@ -253,7 +252,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ env.REPORTING_REPO }}.git
           git push
 
   grype:
@@ -321,7 +320,7 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: ${{ env.REPORTING_OWNER }}
+          owner: ${{ secrets.GH_ACCT }}
           repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
@@ -337,7 +336,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ env.REPORTING_REPO }}.git
           git push
 
   trivy:
@@ -430,7 +429,7 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: ${{ env.REPORTING_OWNER }}
+          owner: ${{ secrets.GH_ACCT }}
           repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
@@ -446,7 +445,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ env.REPORTING_REPO }}.git
           git push
 
   snyk:
@@ -516,7 +515,7 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: ${{ env.REPORTING_OWNER }}
+          owner: ${{ secrets.GH_ACCT }}
           repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
@@ -532,7 +531,7 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ env.REPORTING_REPO }}.git
           git push
 
   clam:
@@ -603,7 +602,7 @@ jobs:
         with:
           depth: 1
           branch: 'main'
-          owner: ${{ env.REPORTING_OWNER }}
+          owner: ${{ secrets.GH_ACCT }}
           repository: ${{ env.REPORTING_REPO }}
           access-token: ${{ secrets.INTERNAL_PAT }}
       -
@@ -619,5 +618,5 @@ jobs:
         name: Push to Reporting Repo
         run: |
           cd ${{ env.REPORTING_REPO }}
-          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ env.REPORTING_OWNER }}/${{ env.REPORTING_REPO }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.INTERNAL_PAT }}@github.com/${{ secrets.GH_ACCT }}/${{ env.REPORTING_REPO }}.git
           git push
