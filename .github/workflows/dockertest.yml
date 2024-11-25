@@ -284,8 +284,8 @@ jobs:
         name: Grype scan
         run: |
           set -eu
-          grype $modusmundi/testingscap:latest -o json --file "${{ env.OUTPUT_NAME }}.json"
-          grype $modusmundi/testingscap:latest 
+          grype modusmundi/testingscap:latest -o json --file "${{ env.OUTPUT_NAME }}.json"
+          grype modusmundi/testingscap:latest 
       -
         name: Check for results and make a stub if no vulnerabilities, otherwise process and make CSV.
         run: |
