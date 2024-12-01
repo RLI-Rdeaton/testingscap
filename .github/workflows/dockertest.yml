@@ -159,6 +159,7 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
+          git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
       -
         name: Push to Reporting Repo
@@ -248,10 +249,6 @@ jobs:
           if [[ ! -d ./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}/ ]]; then
             echo "Project directory does not exist.  Creating."
             mkdir -p ./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}/
-            ls -latr ./${{ secrets.GH_REPO }}/
-            RANDSLEEP=$((1 + SRANDOM % 20))
-            echo "Sleeping for a random amount of time to help offset Git commit collisions, $RANDSLEEP seconds"
-            sleep $RANDSLEEP
           else
             echo "Project directory exists, happy day."
           fi
@@ -263,6 +260,7 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
+          git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
       -
         name: Push to Reporting Repo
@@ -358,6 +356,7 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
+          git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
       -
         name: Push to Reporting Repo
@@ -478,6 +477,7 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
+          git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
       -
         name: Push to Reporting Repo
@@ -574,6 +574,7 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
+          git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
       -
         name: Push to Reporting Repo
@@ -671,6 +672,7 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
+          git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
       -
         name: Push to Reporting Repo
