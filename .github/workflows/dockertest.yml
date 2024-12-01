@@ -145,6 +145,11 @@ jobs:
       -
         name: Access cloned repository content
         run: |
+          if [[ ! -d ./${{ env.REPORTING_REPO }}/${{ github.event.repository.name }}/ ]]; then
+            echo "Project directory does not exist.  Creating."
+            mkdir -p ./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}/
+            ls -latr ./${{ secrets.GH_REPO }}/
+          fi
           cp "./${{ env.OUTPUT_NAME }}.csv" "./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}/${{ env.OUTPUT_NAME }}.csv"
           cd ./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}
           git config --global user.email ${{ secrets.GH_EMAIL }}
@@ -278,14 +283,12 @@ jobs:
 #          password: ${{ secrets.REPO_TOKEN }}
       # grype chainguard/wolfi-base -o json --file grype-results.json
       # grype ${{ env.IMAGE_NAME }} -o json  --file "${{ env.OUTPUT_NAME }}.json"
-      # grype redhat/ubi9:9.4 -o json --file "${{ env.OUTPUT_NAME }}.json"
-      #grype ${{ env.IMAGE_NAME }} -o json  --file "${{ env.OUTPUT_NAME }}.json"
+      # grype redhat/ubi9:9.4 -o json --file "${{ env.OUTPUT_NAME }}.json"sxxxxxxxxxxxxxxxdwq
       -
         name: Grype scan
         run: |
           set -eu
-          grype modusmundi/testingscap:latest -o json --file "${{ env.OUTPUT_NAME }}.json"
-          grype modusmundi/testingscap:latest 
+          grype ${{ env.IMAGE_NAME }} -o json  --file "${{ env.OUTPUT_NAME }}.json"
       -
         name: Check for results and make a stub if no vulnerabilities, otherwise process and make CSV.
         run: |
