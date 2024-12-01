@@ -249,6 +249,9 @@ jobs:
             echo "Project directory does not exist.  Creating."
             mkdir -p ./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}/
             ls -latr ./${{ secrets.GH_REPO }}/
+            RANDSLEEP=$((1 + SRANDOM % 20))
+            echo "Sleeping for a random amount of time to help offset Git commit collisions, $RANDSLEEP seconds"
+            sleep $RANDSLEEP
           else
             echo "Project directory exists, happy day."
           fi
