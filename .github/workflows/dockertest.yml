@@ -145,7 +145,7 @@ jobs:
       -
         name: Access cloned repository content
         run: |
-          if [[ ! -d ./${{ env.REPORTING_REPO }}/${{ github.event.repository.name }}/ ]]; then
+          if [[ ! -d ./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}/ ]]; then
             echo "Project directory does not exist.  Creating."
             mkdir -p ./${{ secrets.GH_REPO }}/${{ github.event.repository.name }}/
             ls -latr ./${{ secrets.GH_REPO }}/
