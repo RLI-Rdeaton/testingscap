@@ -6,7 +6,68 @@
     ],
     "prConcurrentLimit": 10,
     "prHourlyLimit": 10,
-    "schedule": ["before 10am"],
+    "packageRules": [
+        {
+            "packageRules": [
+                {
+                    "matchDatasources": [
+                        "npm"
+                    ],
+                    "matchDepNames": [
+                        "@mitre/saf"
+                    ],
+                    "matchManagers": [
+                        "custom.regex"
+                    ],
+                    "recreateWhen": [
+                        "always"
+                    ],
+                    "automerge": true,
+                    "ignoreTests": true
+                },
+                {
+                    "matchDatasources": [
+                        "docker"
+                    ],
+                    "matchDepNames": [
+                        "alpine"
+                    ],
+                    "recreateWhen": [
+                        "always"
+                    ],
+                    "automerge": true
+                },
+                {
+                    "matchDatasources": [
+                        "docker"
+                    ],
+                    "matchDepNames": [
+                        "radiantone/fid"
+                    ],
+                    "matchUpdateTypes": [
+                        "patch"
+                    ],
+                    "recreateWhen": [
+                        "always"
+                    ]
+                },
+                {
+                    "matchDatasources": [
+                        "docker"
+                    ],
+                    "matchDepNames": [
+                        "docker.io/radiantone/fid"
+                    ],
+                    "matchUpdateTypes": [
+                        "patch"
+                    ],
+                    "recreateWhen": [
+                        "always"
+                    ]
+                }
+            ]
+        }
+    ],
     "customManagers": [
         {
             "customType": "regex",
