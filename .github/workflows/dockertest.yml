@@ -160,7 +160,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
           cat check.txt
           if grep 'nothing added to commit' check.txt; then
             echo "WOAH NELLY"
@@ -168,7 +168,7 @@ jobs:
             exit 0
           else
             rm check.txt
-            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run 
+            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run
           fi
       -
         name: Push to Reporting Repo
