@@ -160,7 +160,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" | tee check.txt
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" > check.txt
           if grep 'nothing to commit, working tree clean' check.txt; then
             echo "WOAH NELLY"
             exit 0
