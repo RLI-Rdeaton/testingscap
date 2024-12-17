@@ -32,37 +32,33 @@
                     "matchDepNames": [
                         "alpine"
                     ],
-                    "recreateWhen": [
-                        "always"
+                    "automerge": true,
+                    "ignoreTests": true
+                },
+                {
+                    "matchDatasources": [
+                        "github-releases"
                     ],
-                    "automerge": true
+                    "matchDepNames": [
+                        "ComplianceAsCode/content",
+                        "chainguard-dev/stigs"
+                    ],
+                    "matchManagers": [
+                        "custom.regex"
+                    ],
+                    "automerge": true,
+                    "ignoreTests": true
                 },
                 {
                     "matchDatasources": [
                         "docker"
                     ],
                     "matchDepNames": [
-                        "radiantone/fid"
-                    ],
-                    "matchUpdateTypes": [
-                        "patch"
-                    ],
-                    "recreateWhen": [
-                        "always"
-                    ]
-                },
-                {
-                    "matchDatasources": [
-                        "docker"
-                    ],
-                    "matchDepNames": [
+                        "radiantone/fid",
                         "docker.io/radiantone/fid"
                     ],
                     "matchUpdateTypes": [
                         "patch"
-                    ],
-                    "recreateWhen": [
-                        "always"
                     ]
                 }
             ]
