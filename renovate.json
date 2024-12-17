@@ -22,6 +22,7 @@
                     "recreateWhen": [
                         "always"
                     ],
+                    "recreateWhen": "always",
                     "automerge": true,
                     "ignoreTests": true
                 },
@@ -32,6 +33,7 @@
                     "matchDepNames": [
                         "alpine"
                     ],
+                    "recreateWhen": "always",
                     "automerge": true,
                     "ignoreTests": true
                 },
@@ -46,6 +48,7 @@
                     "matchManagers": [
                         "custom.regex"
                     ],
+                    "recreateWhen": "always",
                     "automerge": true,
                     "ignoreTests": true
                 },
