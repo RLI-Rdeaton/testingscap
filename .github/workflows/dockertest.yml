@@ -160,7 +160,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt 2>&1 | true
           if grep 'nothing added to commit' check.txt; then
             rm check.txt
             exit 0
@@ -268,7 +268,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt 2>&1 | true
           if grep 'nothing added to commit' check.txt; then
             rm check.txt
             exit 0
@@ -371,7 +371,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt 2>&1 | true
           if grep 'nothing added to commit' check.txt; then
             rm check.txt
             exit 0
@@ -455,9 +455,6 @@ jobs:
           else
             echo "THERE ARE FINDINGS, GENERATING HDF AND CSV"
             saf convert trivy2hdf -i ${{ env.OUTPUT_NAME }}.json -o ${{ env.OUTPUT_NAME }}
-            ls -latr
-            echo "OKAY WHAT"
-            ls ${{ github.workspace }}/${{ env.OUTPUT_NAME }} -latr
             cp '${{ github.workspace }}/${{ env.OUTPUT_NAME }}/aquasecurity - aquasecurity.json' ${{ github.workspace }}/${{ env.OUTPUT_NAME }}.hdf.json
             saf convert hdf2csv -i ${{ env.OUTPUT_NAME }}.hdf.json -o ${{ env.OUTPUT_NAME }}.csv
           fi
@@ -499,7 +496,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt 2>&1 | true
           if grep 'nothing added to commit' check.txt; then
             rm check.txt
             exit 0
@@ -603,7 +600,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt 2>&1 | true
           if grep 'nothing added to commit' check.txt; then
             rm check.txt
             exit 0
@@ -708,7 +705,7 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt 2>&1 | true
           if grep 'nothing added to commit' check.txt; then
             rm check.txt
             exit 0
