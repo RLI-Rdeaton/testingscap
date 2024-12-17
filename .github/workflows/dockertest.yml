@@ -161,10 +161,10 @@ jobs:
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" | tee check.txt
-          if grep -zoP 'nothing to commit, working tree clean' check.txt; then
+          if grep 'nothing to commit, working tree clean' check.txt; then
             echo "WOAH NELLY"
             exit 0
-          fi 
+          fi
       -
         name: Push to Reporting Repo
         run: |
