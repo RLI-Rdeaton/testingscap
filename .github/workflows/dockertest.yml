@@ -160,10 +160,12 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" > check.txt
-          if grep 'nothing to commit, working tree clean' check.txt; then
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" | check.txt
+          if grep 'nothing to commit' check.txt; then
             echo "WOAH NELLY"
             exit 0
+          else
+            rm check.txt
           fi
       -
         name: Push to Reporting Repo
