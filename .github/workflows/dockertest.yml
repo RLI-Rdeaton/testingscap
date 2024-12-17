@@ -161,14 +161,12 @@ jobs:
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
-          cat check.txt
           if grep 'nothing added to commit' check.txt; then
-            echo "WOAH NELLY"
             rm check.txt
             exit 0
           else
             rm check.txt
-            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run
+            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
           fi
       -
         name: Push to Reporting Repo
@@ -270,7 +268,14 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          if grep 'nothing added to commit' check.txt; then
+            rm check.txt
+            exit 0
+          else
+            rm check.txt
+            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          fi
       -
         name: Push to Reporting Repo
         run: |
@@ -366,7 +371,14 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          if grep 'nothing added to commit' check.txt; then
+            rm check.txt
+            exit 0
+          else
+            rm check.txt
+            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          fi
       -
         name: Push to Reporting Repo
         run: |
@@ -487,7 +499,14 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          if grep 'nothing added to commit' check.txt; then
+            rm check.txt
+            exit 0
+          else
+            rm check.txt
+            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          fi
       -
         name: Push to Reporting Repo
         run: |
@@ -584,7 +603,14 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          if grep 'nothing added to commit' check.txt; then
+            rm check.txt
+            exit 0
+          else
+            rm check.txt
+            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          fi
       -
         name: Push to Reporting Repo
         run: |
@@ -682,7 +708,14 @@ jobs:
           git config --global user.name ${{ secrets.GH_NAME }}
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
-          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt | true
+          if grep 'nothing added to commit' check.txt; then
+            rm check.txt
+            exit 0
+          else
+            rm check.txt
+            git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
+          fi
       -
         name: Push to Reporting Repo
         run: |
