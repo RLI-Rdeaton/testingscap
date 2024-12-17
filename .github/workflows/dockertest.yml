@@ -161,8 +161,10 @@ jobs:
           git add "${{ env.OUTPUT_NAME }}.csv"
           git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" | tee check.txt
+          cat check.txt
           if grep 'nothing to commit' check.txt; then
             echo "WOAH NELLY"
+            rm check.txt
             exit 0
           else
             rm check.txt
