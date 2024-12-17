@@ -162,9 +162,11 @@ jobs:
           git pull
           git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}" --dry-run > check.txt 2>&1 | true
           if grep 'nothing added to commit' check.txt; then
+            echo "NOTHING ADDED"
             rm check.txt
             exit 0
           else
+            echo "NEW FILE"
             rm check.txt
             git commit -m "Update ${{ env.TOOL }} results in ${{ github.event.repository.name }}"
           fi
