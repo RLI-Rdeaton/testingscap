@@ -125,7 +125,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
         with:
           name: openscap-results
           path: |
@@ -234,7 +234,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
         with:
           name: trufflehog-results
           path: |
@@ -334,7 +334,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
         with:
           name: ${{ env.OUTPUT_NAME }}
           path: |
@@ -461,7 +461,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
         with:
           name: trivy-results
           path: |
@@ -565,7 +565,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
         with:
           name: snyk-results
           path: |
@@ -671,7 +671,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
         with:
           name: clamd-results
           path: |
