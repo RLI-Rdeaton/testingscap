@@ -86,16 +86,15 @@
                         "docker"
                     ],
                     "matchDepNames": [
-                        "radiantone/fid",
-                        "docker.io/radiantone/fid"
+                        "radiantone/fid"
                     ],
-                    "matchUpdateTypes": [
-                        "patch"
+                    "matchManagers": [
+                        "custom.regex"
                     ],
                     "recreateWhen": "always",
                     "automerge": true,
                     "ignoreTests": true
-                }
+                },
             ]
         }
     ],
