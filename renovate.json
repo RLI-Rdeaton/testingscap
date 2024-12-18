@@ -7,8 +7,6 @@
     "prConcurrentLimit": 10,
     "prHourlyLimit": 10,
     "packageRules": [
-        {
-            "packageRules": [
                 {
                     "matchDatasources": [
                         "npm"
@@ -98,9 +96,13 @@
                     "automerge": true,
                     "ignoreTests": true
                 },
-            ]
-        }
-    ],
+                {
+                  "updateTypes": ["pin", "digest"],
+                  "recreateWhen": "always",
+                  "automerge": true,
+                  "ignoreTests": true
+                }
+            ],
     "customManagers": [
         {
             "customType": "regex",
