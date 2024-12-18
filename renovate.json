@@ -72,6 +72,20 @@
                         "docker"
                     ],
                     "matchDepNames": [
+                        "fid"
+                    ],
+                    "matchUpdateTypes": [
+                        "patch"
+                    ],
+                    "recreateWhen": "always",
+                    "automerge": true,
+                    "ignoreTests": true
+                },
+                {
+                    "matchDatasources": [
+                        "docker"
+                    ],
+                    "matchDepNames": [
                         "radiantone/fid",
                         "docker.io/radiantone/fid"
                     ],
@@ -130,5 +144,6 @@
             "depNameTemplate": "radiantone/fid",
             "datasourceTemplate": "docker"
         }
-    ]
+    ],
+    "docker": {"pinDigests": true}
 }
