@@ -91,6 +91,9 @@
                     "matchManagers": [
                         "custom.regex"
                     ],
+                    "matchUpdateTypes": [
+                        "patch"
+                    ],
                     "recreateWhen": "always",
                     "automerge": true,
                     "ignoreTests": true
