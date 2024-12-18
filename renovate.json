@@ -54,6 +54,21 @@
                 },
                 {
                     "matchDatasources": [
+                        "github-tags"
+                    ],
+                    "matchDepNames": [
+                        "actions/upload-artifact",
+                        "docker/login-action",
+                        "docker/setup-buildx-action",
+                        "docker/build-push-action",
+                        "GuillaumeFalourd/clone-github-repo-action"
+                    ],
+                    "recreateWhen": "always",
+                    "automerge": true,
+                    "ignoreTests": true
+                },
+                {
+                    "matchDatasources": [
                         "docker"
                     ],
                     "matchDepNames": [
