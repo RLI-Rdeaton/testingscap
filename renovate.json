@@ -81,7 +81,8 @@
                 "docker"
             ],
             "matchDepNames": [
-                "radiantone/fid"
+                "radiantone/fid",
+                "docker.io/radiantone/fid"
             ],
             "matchManagers": [
                 "custom.regex"
