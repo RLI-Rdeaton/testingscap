@@ -4,11 +4,11 @@
 ################################################################################
 ARG BASE_REGISTRY=docker.io
 ARG BASE_IMAGE=chainguard/wolfi-base
-ARG BASE_TAG=latest
+ARG BASE_TAG=latest@sha256:56614cdca9ca3f091f18e594148e65427109a3c45f30d79263eecf4b711c5ae9
 
 ARG FID_REGISTRY=docker.io
 ARG FID_IMAGE=radiantone/fid
-ARG FID_TAG=7.4.12
+ARG FID_TAG=7.4.12@sha256:3d50813225986bbc067b1e01c6f3a41851ee6d36f87de3d17fe9cbd4a73f3ad3
 
 FROM ${FID_REGISTRY}/${FID_IMAGE}:${FID_TAG} AS base
 
