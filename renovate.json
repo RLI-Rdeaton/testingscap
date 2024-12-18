@@ -7,96 +7,93 @@
     "prConcurrentLimit": 10,
     "prHourlyLimit": 10,
     "packageRules": [
-                {
-                    "matchDatasources": [
-                        "npm"
-                    ],
-                    "matchDepNames": [
-                        "@mitre/saf"
-                    ],
-                    "matchManagers": [
-                        "custom.regex"
-                    ],
-                    "recreateWhen": [
-                        "always"
-                    ],
-                    "recreateWhen": "always",
-                    "automerge": true,
-                    "ignoreTests": true
-                },
-                {
-                    "matchDatasources": [
-                        "docker"
-                    ],
-                    "matchDepNames": [
-                        "alpine"
-                    ],
-                    "recreateWhen": "always",
-                    "automerge": true,
-                    "ignoreTests": true
-                },
-                {
-                    "matchDatasources": [
-                        "github-releases"
-                    ],
-                    "matchDepNames": [
-                        "ComplianceAsCode/content",
-                        "chainguard-dev/stigs"
-                    ],
-                    "matchManagers": [
-                        "custom.regex"
-                    ],
-                    "recreateWhen": "always",
-                    "automerge": true,
-                    "ignoreTests": true
-                },
-                {
-                    "matchDatasources": [
-                        "github-tags"
-                    ],
-                    "matchDepNames": [
-                        "actions/upload-artifact",
-                        "docker/login-action",
-                        "docker/setup-buildx-action",
-                        "docker/build-push-action",
-                        "GuillaumeFalourd/clone-github-repo-action"
-                    ],
-                    "recreateWhen": "always",
-                    "automerge": true,
-                    "ignoreTests": true
-                },
-                {
-                    "matchDatasources": [
-                        "docker"
-                    ],
-                    "matchDepNames": [
-                        "fid"
-                    ],
-                    "matchUpdateTypes": [
-                        "patch"
-                    ],
-                    "recreateWhen": "always",
-                    "automerge": true,
-                    "ignoreTests": true
-                },
-                {
-                    "matchDatasources": [
-                        "docker"
-                    ],
-                    "matchDepNames": [
-                        "radiantone/fid"
-                    ],
-                    "matchManagers": [
-                        "custom.regex"
-                    ],
-                    "matchUpdateTypes": [
-                        "patch"
-                    ],
-                    "recreateWhen": "always",
-                    "automerge": true,
-                    "ignoreTests": true
-                },
+        {
+            "matchDatasources": [
+                "npm"
             ],
+            "matchDepNames": [
+                "@mitre/saf"
+            ],
+            "matchManagers": [
+                "custom.regex"
+            ],
+            "recreateWhen": "always",
+            "automerge": true,
+            "ignoreTests": true
+        },
+        {
+            "matchDatasources": [
+                "docker"
+            ],
+            "matchDepNames": [
+                "alpine"
+            ],
+            "recreateWhen": "always",
+            "automerge": true,
+            "ignoreTests": true
+        },
+        {
+            "matchDatasources": [
+                "github-releases"
+            ],
+            "matchDepNames": [
+                "ComplianceAsCode/content",
+                "chainguard-dev/stigs"
+            ],
+            "matchManagers": [
+                "custom.regex"
+            ],
+            "recreateWhen": "always",
+            "automerge": true,
+            "ignoreTests": true
+        },
+        {
+            "matchDatasources": [
+                "github-tags"
+            ],
+            "matchDepNames": [
+                "actions/upload-artifact",
+                "docker/login-action",
+                "docker/setup-buildx-action",
+                "docker/build-push-action",
+                "GuillaumeFalourd/clone-github-repo-action"
+            ],
+            "recreateWhen": "always",
+            "automerge": true,
+            "ignoreTests": true
+        },
+        {
+            "matchDatasources": [
+                "docker"
+            ],
+            "matchDepNames": [
+                "fid"
+            ],
+            "matchUpdateTypes": [
+                "patch"
+            ],
+            "recreateWhen": "always",
+            "automerge": true,
+            "ignoreTests": true
+        },
+        {
+            "matchDatasources": [
+                "docker"
+            ],
+            "matchDepNames": [
+                "radiantone/fid"
+            ],
+            "matchManagers": [
+                "custom.regex"
+            ],
+            "matchUpdateTypes": [
+                "patch"
+            ],
+            "recreateWhen": "always",
+            "automerge": true,
+            "ignoreTests": true
+        }
+    ],
     "customManagers": [
         {
             "customType": "regex",
