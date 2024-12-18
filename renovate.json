@@ -96,12 +96,6 @@
                     "automerge": true,
                     "ignoreTests": true
                 },
-                {
-                  "updateTypes": ["pin", "digest"],
-                  "recreateWhen": "always",
-                  "automerge": true,
-                  "ignoreTests": true
-                }
             ],
     "customManagers": [
         {
@@ -148,6 +142,5 @@
             "depNameTemplate": "radiantone/fid",
             "datasourceTemplate": "docker"
         }
-    ],
-    "docker": {"pinDigests": true}
+    ]
 }
