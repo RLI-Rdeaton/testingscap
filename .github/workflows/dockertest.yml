@@ -13,7 +13,7 @@ env:
   CURRENT_VERSION_TAG: "7.4.11"
   #github.event.repository.name is a special environment variable that gives us the repo name.  There isn't great documentation on it.
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
-  MITRE_SAF_VERSION: "1.4.16"
+  MITRE_SAF_VERSION: "1.4.15"
 
 jobs:
   build:
@@ -42,8 +42,8 @@ jobs:
     container:
       image: alpine:3.21.0@sha256:21dc6063fd678b478f57c0e13f47560d0ea4eeba26dfc947b2a4f81f686b9f45
     env:
-      SCAP_SECURITY_GUIDE_VERSION: "0.1.75"
-      WOLFI_STIG_VERSION: "0.1.2"
+      SCAP_SECURITY_GUIDE_VERSION: "0.1.74"
+      WOLFI_STIG_VERSION: "0.1.1"
       SSG_DIR: "ssg"
       TOOL: "openscap"
       OUTPUT_NAME: "openscap-results"
