@@ -67,7 +67,8 @@
                 "docker"
             ],
             "matchDepNames": [
-                "fid"
+              "radiantone/fid",
+              "docker.io/radiantone/fid"
             ],
             "matchUpdateTypes": [
                 "patch"
