@@ -25,7 +25,7 @@ ARG FID_TAG
 # nc is apk add netcat-openbsd
 # gzip is on the machine
 # unzip is on the machine
-# vi comes standard - do w e want to add vim or nano?
+# vi comes standard - do we want to add vim or nano?
 #
 
 RUN apk update && apk add --no-cache --update-cache netcat-openbsd \
@@ -34,9 +34,7 @@ curl grep bash
 # Copy file from FID image
 COPY --from=base --chown=1000:1000 /opt/radiantone /opt/radiantone
 
-RUN addgroup --gid 1000 radiant && adduser -H -D -u 1000 -G radiant radiant
-
-RUN chmod -R g=u /opt/radiantone
+RUN addgroup --gid 1000 radiant && adduser -H -D -u 1000 -G radiant radiant && chmod -R g=u /opt/radiantone
 
 RUN rm -f /opt/radiantone/migration-tool.zip
 

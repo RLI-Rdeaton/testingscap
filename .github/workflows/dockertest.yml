@@ -65,15 +65,6 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      -
-#        name: Login to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          registry: ${{ secrets.REPO_FQDN }}
-#          username: ${{ secrets.REPO_USERNAME }}
-#          password: ${{ secrets.REPO_TOKEN }}
-        # oscap-docker requires the image to have been pulled
-        # docker pull "${IMAGE_NAME}"
       -
         name: Pull the docker image to scan
         run: |
@@ -125,7 +116,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
+        uses: actions/upload-artifact@v4
         with:
           name: openscap-results
           path: |
@@ -197,15 +188,6 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      -
-#        name: Login to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          registry: ${{ secrets.REPO_FQDN }}
-#          username: ${{ secrets.REPO_USERNAME }}
-#          password: ${{ secrets.REPO_TOKEN }}
-      #CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
-      #CONT_ID=$(docker create node:8.11)
       -
         name: Create, export, then extract to the filesystem
         run: |
@@ -234,7 +216,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
+        uses: actions/upload-artifact@v4
         with:
           name: trufflehog-results
           path: |
@@ -303,16 +285,6 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      -
-#        name: Login to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          registry: ${{ secrets.REPO_FQDN }}
-#          username: ${{ secrets.REPO_USERNAME }}
-#          password: ${{ secrets.REPO_TOKEN }}
-      # grype chainguard/wolfi-base -o json --file grype-results.json
-      # grype ${{ env.IMAGE_NAME }} -o json  --file "${{ env.OUTPUT_NAME }}.json"
-      # grype redhat/ubi9:9.4 -o json --file "${{ env.OUTPUT_NAME }}.json"sxxxxxxxxxxxxxxxdwq
       -
         name: Grype scan
         run: |
@@ -334,7 +306,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.OUTPUT_NAME }}
           path: |
@@ -388,9 +360,6 @@ jobs:
 
   trivy:
     needs: build
-    permissions:
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     env:
       TOOL: "trivy"
@@ -416,16 +385,6 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      -
-#        name: Login to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          registry: ${{ secrets.REPO_FQDN }}
-#          username: ${{ secrets.REPO_USERNAME }}
-#          password: ${{ secrets.REPO_TOKEN }}
-      #image-ref: ${{ env.IMAGE_NAME }}
-      # image-ref: 'redhat/ubi9:9.4'
-      #image-ref: radiantone/fid:7.4.9
       -
         name: Scan image
         run: |
@@ -461,7 +420,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
+        uses: actions/upload-artifact@v4
         with:
           name: trivy-results
           path: |
@@ -534,18 +493,8 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      -
-#        name: Login to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          registry: ${{ secrets.REPO_FQDN }}
-#          username: ${{ secrets.REPO_USERNAME }}
-#          password: ${{ secrets.REPO_TOKEN }}
       -
         name: Scan using Snyk
-        continue-on-error: true
-        # 'redhat/ubi9:9.4'
-        # ${{ env.IMAGE_NAME }}
         run: |
           snyk container test ${{ env.IMAGE_NAME }} --app-vulns --nested-jars-depth=5 --json --json-file-output=${{ env.OUTPUT_NAME }}.json || true
       -
@@ -565,7 +514,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
+        uses: actions/upload-artifact@v4
         with:
           name: snyk-results
           path: |
@@ -636,15 +585,6 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      -
-#        name: Login to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          registry: ${{ secrets.REPO_FQDN }}
-#          username: ${{ secrets.REPO_USERNAME }}
-#          password: ${{ secrets.REPO_TOKEN }}
-      # CONT_ID=$(docker create ${{ env.IMAGE_NAME }})
-      # CONT_ID=$(docker create modusmundi/eicartest:1.0.0)
       -
         name: Create, export, then extract to the filesystem
         run: |
@@ -671,7 +611,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
+        uses: actions/upload-artifact@v4
         with:
           name: clamd-results
           path: |
