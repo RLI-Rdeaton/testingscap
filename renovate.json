@@ -141,5 +141,6 @@
             "depNameTemplate": "radiantone/fid",
             "datasourceTemplate": "docker"
         }
-    ]
+    ],
+    "docker": {"pinDigests": true}
 }
