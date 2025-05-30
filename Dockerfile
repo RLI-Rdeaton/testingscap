@@ -8,7 +8,7 @@ ARG BASE_TAG=latest
 
 ARG FID_REGISTRY=docker.io
 ARG FID_IMAGE=radiantone/fid
-ARG FID_TAG=7.4.15
+ARG FID_TAG=7.4.16
 
 FROM ${FID_REGISTRY}/${FID_IMAGE}:${FID_TAG} AS base
 
