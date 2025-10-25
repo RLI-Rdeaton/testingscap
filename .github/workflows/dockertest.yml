@@ -116,7 +116,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: openscap-results
           path: |
@@ -216,7 +216,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: trufflehog-results
           path: |
@@ -306,7 +306,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: ${{ env.OUTPUT_NAME }}
           path: |
@@ -420,7 +420,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: trivy-results
           path: |
@@ -514,7 +514,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: snyk-results
           path: |
@@ -611,7 +611,7 @@ jobs:
       -
         name: Upload reports
         if: success() || failure() # always run even if the previous step fails
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: clamd-results
           path: |
