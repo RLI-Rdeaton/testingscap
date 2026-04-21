@@ -125,7 +125,7 @@ jobs:
             ${{ env.OUTPUT_NAME }}.csv
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        uses: GuillaumeFalourd/clone-github-repo-action@v3
         with:
           depth: 1
           branch: 'main'
@@ -225,7 +225,7 @@ jobs:
             ${{ env.OUTPUT_NAME }}.csv
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        uses: GuillaumeFalourd/clone-github-repo-action@v3
         with:
           depth: 1
           branch: 'main'
@@ -315,7 +315,7 @@ jobs:
             ${{ env.OUTPUT_NAME }}.csv
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        uses: GuillaumeFalourd/clone-github-repo-action@v3
         with:
           depth: 1
           branch: 'main'
@@ -429,7 +429,7 @@ jobs:
             ${{ env.OUTPUT_NAME }}.csv
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        uses: GuillaumeFalourd/clone-github-repo-action@v3
         with:
           depth: 1
           branch: 'main'
@@ -523,7 +523,7 @@ jobs:
             ${{ env.OUTPUT_NAME }}.csv
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        uses: GuillaumeFalourd/clone-github-repo-action@v3
         with:
           depth: 1
           branch: 'main'
@@ -619,7 +619,7 @@ jobs:
             ${{ env.OUTPUT_NAME }}.csv
       -
         name: Clone Reporting Repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        uses: GuillaumeFalourd/clone-github-repo-action@v3
         with:
           depth: 1
           branch: 'main'
